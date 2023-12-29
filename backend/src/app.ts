@@ -2,9 +2,21 @@ import express, { Request, Response } from "express";
 import admin from 'firebase-admin'
 import { initializeApp } from "firebase/app";
 import { getAuth, createUserWithEmailAndPassword, Auth, signInWithEmailAndPassword } from "firebase/auth";
+var cors = require('cors');
 
 const app = express();
 app.use(express.json());
+
+const corsOptions = {
+  origin: '*',
+  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  credentials: true,
+  optionsSuccessStatus: 204,
+};
+
+app.use(cors(corsOptions));
+
+
 
 const PORT = process.env.PORT || 3000;
 
@@ -48,6 +60,7 @@ app.post("/test", async (req: Request, res: Response) => {
 });
 
 app.post("/register", async (req: Request, res: Response) => {
+  
   const { email, password } = req.body;
   try {
     const userCredential = await admin.auth().createUser({
