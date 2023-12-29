@@ -1,0 +1,146 @@
+[
+    {
+        "id": 1,
+        "issuer": "Slovenia",
+        "years": "2007-2023",
+        "value": "1 Euro Cent (0.01 EUR)",
+        "currency": "Euro",
+        "composition": "Copper plated steel",
+        "weight": "2.30 g",
+        "diameter": "16.25 mm",
+        "thickness": "1.67 mm",
+        "shape": "Round",
+        "obverse": "A stork, a motif taken from the former 20 Tolar coin, encircled by the twelve stars of Europe around the rim alternated with the letters of the country name.",
+        "reverse": "A globe, next to the facial value, shows Europe in relation to Africa and Asia",
+        "images": {
+            "front": "/data/images/1eurocent/front.jpg",
+            "back": "/data/images/1eurocent/back.jpg"
+        }
+    },
+    {
+        "id": 2,
+        "issuer": "Slovenia",
+        "years": "2007-2023",
+        "value": "2 Euro Cent (0.02 EUR)",
+        "currency": "Euro",
+        "composition": "Copper plated steel",
+        "weight": "3.06 g",
+        "diameter": "18.75 mm",
+        "thickness": "1.67 mm",
+        "shape": "Round",
+        "obverse": "The Prince's stone, where Karantanian dukes were installed, encircled by the twelve stars of Europe alternated with the letters of the country name.",
+        "reverse": "A globe, next to the face value, shows Europe in relation to Africa and Asia.",
+        "images": {
+            "front": "/data/images/2eurocent/front.jpg",
+            "back": "/data/images/2eurocent/back.jpg"
+        }
+    },
+    {
+        "id": 3,
+        "issuer": "Slovenia",
+        "years": "2007-2023",
+        "value": "5 Euro Cent (0.05 EUR)",
+        "currency": "Euro",
+        "composition": "Copper plated steel",
+        "weight": "3.92 g",
+        "diameter": "21.25 mm",
+        "thickness": "1.67 mm",
+        "shape": "Round",
+        "obverse": "The Sower sowing stars, adapted from the Slovenian Impressionist painter Ivan Grohar (1867-1911), is encircled by the twelve stars of Europe alternated with the letters of the word SLOVENIJA (Slovenia).",
+        "reverse": "A globe, next to the face value, shows Europe in relation to Africa and Asia.",
+        "images": {
+            "front": "/data/images/5eurocent/front.jpg",
+            "back": "/data/images/5eurocent/back.jpg"
+        }
+    },
+    {
+        "id": 4,
+        "issuer": "Slovenia",
+        "years": "2007-2023",
+        "value": "10 Euro Cent (0.10 EUR)",
+        "currency": "Euro",
+        "composition": "Nordic gold",
+        "weight": "4.10 g",
+        "diameter": "19.75 mm",
+        "thickness": "1.93 mm",
+        "shape": "Round",
+        "obverse": "The unrealized plan for the Slovenian Parliament of architect Jože Plečnik (1872-1957), is accompanied by the legend KATEDRALA SVOBODE (cathedral of freedom) and encircled by the twelve stars of Europe alternated with the letters of the word SLOVENIJA (Slovenia).",
+        "reverse": "A geographical map of the European Union accompany the face value.",
+        "images": {
+            "front": "/data/images/10eurocent/front.jpg",
+            "back": "/data/images/10eurocent/back.jpg"
+        }
+    },
+    {
+        "id": 5,
+        "issuer": "Slovenia",
+        "years": "2007-2023",
+        "value": "20 Euro Cent (0.20 EUR)",
+        "currency": "Euro",
+        "composition": "Nordic gold",
+        "weight": "5.74 g",
+        "diameter": "22.25 mm",
+        "thickness": "2.14 mm",
+        "shape": "Round",
+        "obverse": "A pair of Lipizzaner horses, accompanied by the legend LIPICANEC, encircled by the twelve stars of Europe representing the European Union alternating with the letters of the word SLOVENIJA",
+        "reverse": "A geographical map of the European Union accompany the face value.",
+        "images": {
+            "front": "/data/images/20eurocent/front.jpg",
+            "back": "/data/images/20eurocent/back.jpg"
+        }
+    },
+    {
+        "id": 6,
+        "issuer": "Slovenia",
+        "years": "2007-2023",
+        "value": "50 Euro Cent (0.50 EUR)",
+        "currency": "Euro",
+        "composition": "Nordic gold",
+        "weight": "7.80 g",
+        "diameter": "24.25 mm",
+        "thickness": "2.38 mm",
+        "shape": "Round",
+        "obverse": "Triglav, the highest mountain in Slovenia (2864m), accompanied with the inscription OJ TRIGLAV MOJ DOM (O Triglav, my home), and the constellation of Cancer, the astrological sign under which Slovenia became independent, are encircled by the twelve stars of Europe alternated with the letters of the word SLOVENIJA (Slovenia).",
+        "reverse": "A geographical map of the European Union accompany the face value.",
+        "images": {
+            "front": "/data/images/50eurocent/front.jpg",
+            "back": "/data/images/50eurocent/back.jpg"
+        }
+    },
+    {
+        "id": 7,
+        "issuer": "Slovenia",
+        "years": "2007-2023",
+        "value": "1 Euro (1 EUR)",
+        "currency": "Euro",
+        "composition": "Bimetallic: copper-nickel clad nickel center in nickel brass ring",
+        "weight": "7.50 g",
+        "diameter": "23.25 mm",
+        "thickness": "2.33 mm",
+        "shape": "Round",
+        "obverse": "The portrait of Primož Trubar, a Slovenian Protestant reformer, is accompanied by a legend indicating his name and the inscription STATI INU OBSTATI and the twelve stars of Europe alternated with the letters of the word SLOVENIJA (Slovenia) in the outer rim",
+        "reverse": "A map, next to the face value, shows the European continent without borders.",
+        "images": {
+            "front": "/data/images/1euro/front.jpg",
+            "back": "/data/images/1euro/back.jpg"
+        }
+    },
+    {
+        "id": 8,
+        "issuer": "Slovenia",
+        "years": "2007",
+        "value": "2 Euro (2 EUR)",
+        "currency": "Euro",
+        "composition": "Bimetallic: nickel brass clad nickel center in copper-nickel ring",
+        "weight": "8.50 g",
+        "diameter": "25.75 mm",
+        "thickness": "2.20 mm",
+        "shape": "Round",
+        "obverse": "The coin shows the Treaty document signed by the six founding countries on a background evoking the paving (designed by Michelangelo) of the Piazza del Campidoglio in Rome, where the signing took place on 25 March 1957. 'Treaty of Rome 50 years', 'EUROPE' and the name of the issuing country appear in the respective languages of the euro area or in Latin. Thus, the legend differs from country to country, but the image is the same. The Treaty of Rome established the European Economic Community and ultimately led to the introduction of the euro in 1999 and the euro banknotes and coins in 2002. The anniversary was celebrated on 25 March 2007. The euro area countries have marked the occasion by jointly issuing this commemorative coin. Its design was selected following a competition organised by the European mints. The coin's outer ring bears the 12 stars of the European Union.",
+        "reverse": "A map, next to the face value, shows the European continent without borders.",
+        "images": {
+            "front": "/data/images/2euro/front.jpg",
+            "back": "/data/images/2euro/back.jpg"
+        }
+    }
+]
