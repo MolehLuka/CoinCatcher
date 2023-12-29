@@ -5,7 +5,11 @@ import { getAuth, createUserWithEmailAndPassword, Auth, signInWithEmailAndPasswo
 var cors = require('cors');
 
 const app = express();
+const path = require('path');
+const fs = require('fs');
+
 app.use(express.json());
+app.use('/data/images', express.static(path.join(__dirname, 'data/images')));
 
 const corsOptions = {
   origin: '*',
@@ -89,6 +93,25 @@ app.post("/login", async (req:Request, res:Response) => {
     res.status(500).json({ error: "Napaka pri prijavi:", message: error.message });
   }
 })
+
+app.get('/random-coin', (req, res) => {
+  // Read the JSON file
+  fs.readFile(path.join(__dirname, '..', 'data', 'kovanci.json'), 'utf8', (err: any, data: string) => {
+    if (err) {
+      res.status(500).send('Server error reading coin data');
+      return;
+    }
+    
+    // Parse the JSON data
+    const coins = JSON.parse(data);
+
+    // Select a random coin
+    const randomCoin = coins[Math.floor(Math.random() * coins.length)];
+
+    // Return the random coin data
+    res.json(randomCoin);
+  });
+});
 
 app.listen(PORT, () => {
   console.log(`Strežnik posluša na portu ${PORT}`);
