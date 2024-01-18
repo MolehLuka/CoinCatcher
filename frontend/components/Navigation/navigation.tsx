@@ -7,15 +7,24 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import CollectionScreen from "../Collection/collection";
 import HomeScreen from "../HomeScreen/home";
+import Register from "../Register/register";
+import Login from "../Login/login";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 const Drawer = createDrawerNavigator();
 
+const setUid = () =>{
+
+}
+
+
 const AppNavigator = () => {
   return (
     <NavigationContainer>
       <Tab.Navigator>
+      <Stack.Screen name="Register" component={Register} />
+        <Stack.Screen name="Login" component={Login}/>
         <Tab.Screen name="Home" component={HomeScreen} />
         <Tab.Screen
           name="Camera"

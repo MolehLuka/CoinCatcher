@@ -84,10 +84,13 @@ app.post("/register", async (req: Request, res: Response) => {
 });
 
 app.post("/login", async (req:Request, res:Response) => {
+
   const {email, password} = req.body;
+  console.log(email,password)
   try {
     const user = await signInWithEmailAndPassword(auth, email, password)
-    res.status(200).json({message: "Prijava uspela", user: user})
+    console.log(user)
+    res.status(200).json({message: "Prijava uspela", user: user.user.uid})
   }catch (error: any){
     console.error("Napaka pri prijavi:", error.message);
     res.status(500).json({ error: "Napaka pri prijavi:", message: error.message });
