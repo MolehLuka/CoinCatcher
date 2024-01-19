@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, FlatList, Image } from 'react-native';
+import { baseUrl } from '../../global';
 
 interface MyCoin {
   id: string;
@@ -26,7 +27,6 @@ const CoinItem: React.FC<{ coin: MyCoin }> = ({ coin }) => (
 const Trznica = () => {
   const [coinData, setCoinData] = useState<MyCoin[]>([]);
   const [loading, setLoading] = useState(true);
-  const baseUrl = "http://164.8.207.161:3000";
 
   useEffect(() => {
     const fetchCoinData = async () => {

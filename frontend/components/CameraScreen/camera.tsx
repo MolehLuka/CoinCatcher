@@ -15,6 +15,8 @@ import { ActivityIndicator } from "react-native";
 
 import { StackNavigationProp } from "@react-navigation/stack";
 
+import { baseUrl } from "../../global";
+
 type RootStackParamList = {
   ScannedCoinInfo: { coinData: any };
   CameraScreen: undefined;
@@ -88,7 +90,7 @@ export const CameraScreen: React.FC<Props> = ({ navigation }) => {
   const identifyCoin = async () => {
     setLoading(true);
     try {
-      const response = await fetch("http://192.168.1.107:3000/random-coin");
+      const response = await fetch(`${baseUrl}/random-coin`);
       const data = await response.json();
       setCoinData(data);
 
@@ -141,13 +143,13 @@ export const CameraScreen: React.FC<Props> = ({ navigation }) => {
       {frontImage && backImage && (
         <View style={styles.buttonContainer}>
         {!loading ? (
-          <TouchableOpacity style={styles.identifyButton} onPress={identifyCoin}>
+          <TouchableOpacity style={styles.retakeIdentButton} onPress={identifyCoin}>
             <Text style={styles.buttonText}>Identify coin</Text>
           </TouchableOpacity>
         ) : (
-          <ActivityIndicator size="large" color="#0000ff" />
+          <ActivityIndicator size="large" color="#FFA500" />
         )}
-        <TouchableOpacity style={styles.retakeButton} onPress={handleRetake}>
+        <TouchableOpacity style={styles.retakeIdentButton} onPress={handleRetake}>
           <Text style={styles.buttonText}>Retake</Text>
         </TouchableOpacity>
       </View>
@@ -207,19 +209,18 @@ const styles = StyleSheet.create({
   },
   highlight: {
     fontWeight: "bold",
-    color: "yellow",
+    color: "#FFA500",
   },
-  identifyButton: {
+  retakeIdentButton: {
     backgroundColor: '#FFA500', // Orange color
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 20,
-  },
-  retakeButton: {
-    backgroundColor: '#FFA500', // Orange color
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 20,
+    elevation: 3, // Add elevation for Android shadow
+    shadowColor: "#000000", // Shadow for iOS
+    shadowOffset: { width: 0, height: 2 }, // Shadow for iOS
+    shadowOpacity: 0.3, // Shadow for iOS
+    shadowRadius: 2, // Shadow for iOS
   },
   buttonText: {
     color: 'white',
