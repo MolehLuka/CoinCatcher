@@ -1,14 +1,43 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, TouchableOpacity, Text, StyleSheet, Image} from "react-native";
+import {
+  View,
+  TouchableOpacity,
+  Text,
+  StyleSheet,
+  Image,
+  Button,
+} from "react-native";
 import { Camera, CameraType } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
-import Button from "./camerabutton";
+import CameraButton from "./camerabutton";
+import { CameraOverlay } from "./cameraoverlay";
+import { ActivityIndicator } from "react-native";
 
-export const CameraScreen: React.FC = () => {
+import { StackNavigationProp } from "@react-navigation/stack";
+
+type RootStackParamList = {
+  ScannedCoinInfo: { coinData: any };
+  CameraScreen: undefined;
+  // Add other screen names and their respective params if needed
+};
+
+type CameraScreenNavigationProp = StackNavigationProp<
+  RootStackParamList,
+  "CameraScreen"
+>;
+
+type Props = {
+  navigation: CameraScreenNavigationProp;
+};
+
+export const CameraScreen: React.FC<Props> = ({ navigation }) => {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [image, setImage] = useState<string | null>(null);
   const [cameraType, setCameraType] = useState(CameraType.back);
   const cameraRef = useRef<Camera>(null);
+
+  const [loading, setLoading] = useState(false);
+  const [coinData, setCoinData] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -21,32 +50,75 @@ export const CameraScreen: React.FC = () => {
   const takePicture = async () => {
     if (cameraRef) {
       try {
-        const data = cameraRef.current ? await (cameraRef.current as Camera).takePictureAsync() : null;
-        console.log(data)
+        const data = cameraRef.current
+          ? await (cameraRef.current as Camera).takePictureAsync()
+          : null;
+        console.log(data);
         if (data) {
           setImage(data.uri);
         }
-      }
-      catch (error) {
+      } catch (error) {
         console.log(error);
       }
     }
-  }
+  };
 
   if (hasPermission === false) {
     return <Text>No access to camera</Text>;
   }
 
+  const handleRetake = () => {
+    setImage(null); // Reset image state to bring back camera
+  };
+
+  const identifyCoin = async () => {
+    setLoading(true);
+    try {
+      const response = await fetch("http://192.168.1.107:3000/random-coin");
+      const data = await response.json();
+      setCoinData(data);
+
+      // simulirana 8 sekundna identifikacija
+      setTimeout(() => {
+        setLoading(false);
+        navigation.navigate("ScannedCoinInfo", { coinData: data });
+      }, 8000); 
+    } catch (error) {
+      console.log(error);
+      setLoading(false);
+    }
+  };
+
+  // Render logic
   return (
     <View style={styles.container}>
-      {!image ?
-      <Camera type={cameraType} ref={cameraRef} style={styles.camera}>
-      </Camera>
-      :
-      <Image source={{ uri: image }}/>}
-      <View>
-        <Button title={"Capture coin"} icon="camera" onPress={takePicture} color={"white"}/>
-      </View>
+      {!image ? (
+        <Camera style={styles.camera} type={cameraType} ref={cameraRef}>
+          <CameraOverlay />
+        </Camera>
+      ) : (
+        <>
+          <View style={styles.previewContainer}>
+            <Image source={{ uri: image }} style={styles.preview} />
+          </View>
+          <View style={styles.buttonContainer}>
+            {!loading ? (
+              <Button title={"Identify coin"} onPress={identifyCoin} color={"white"} />
+            ) : (
+              <ActivityIndicator size="large" color="#0000ff" />
+            )}
+            <Button title={"Retake"} onPress={handleRetake} color={"white"} />
+          </View>
+        </>
+      )}
+      {!image && !loading && (
+        <CameraButton
+          title={"Capture coin"}
+          icon="camera"
+          onPress={takePicture}
+          color={"white"}
+        />
+      )}
     </View>
   );
 };
@@ -61,5 +133,24 @@ const styles = StyleSheet.create({
   camera: {
     flex: 1,
     borderRadius: 20,
+  },
+  previewContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    overflow: "hidden",
+  },
+  preview: {
+    width: "150%",
+    height: "150%",
+    resizeMode: 'cover',
+    alignSelf: 'center',
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
   },
 });
