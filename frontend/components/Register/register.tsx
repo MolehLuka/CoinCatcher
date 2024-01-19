@@ -11,7 +11,7 @@ import {
 import Modal from "react-native-modal";
 import axios, { AxiosResponse } from "axios";
 import { useAuth } from "../../authcontext";
-const baseUrl = "http://10.0.2.2:3000";
+const baseUrl = "http://127.0.0.1:3000";
 
 interface RegisterProps {
   navigation: NativeStackNavigationProp<any>;

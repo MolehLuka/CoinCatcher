@@ -10,6 +10,8 @@ import HomeScreen from "../HomeScreen/home";
 import ScannedCoinInfo from "../ScannedCoinInfo/scannedcoininfo";
 import Register from "../Register/register";
 import Login from "../Login/login";
+import DodajKovanecScreen from "../DodajTrznica/dodajtrznica";
+import Trznica from "../Trznica/trznica";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -37,6 +39,8 @@ const AppNavigator = () => {
       <Tab.Navigator>
       <Stack.Screen name="Register" component={Register} />
         <Stack.Screen name="Login" component={Login}/>
+        <Stack.Screen name="Dodaj" component={DodajKovanecScreen}/>
+        <Stack.Screen name="Trznica" component={Trznica}/>
         <Tab.Screen name="Home" component={HomeScreen} />
         <Tab.Screen
           name="Camera"
