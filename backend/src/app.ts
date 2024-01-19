@@ -38,7 +38,6 @@ const firebaseConfig = {
   messagingSenderId: "606108606548",
   appId: "1:606108606548:web:acd2cdca1c7c5031254dc1"
 };
-
 const appFirebase = initializeApp(firebaseConfig);
 const auth = getAuth(appFirebase);
 const db = admin.firestore();
@@ -82,6 +81,72 @@ app.post("/register", async (req: Request, res: Response) => {
     res.status(500).json({ error: "Napaka pri registraciji:", message: error.message });
   }
 });
+const storage = admin.storage();
+const storageBucketName = 'gs://coincatcher-7807a.appspot.com'; 
+const storageSubdirectory = 'images';
+
+const multer = require('multer');
+
+const multerStorage = multer.memoryStorage();
+const upload = multer({ storage: multerStorage });
+
+app.post("/dodajSvojKovanec", upload.single('slika'), async (req: Request , res: Response) => {
+  try {
+    const { ime, opis, kolicina } = req.body;
+
+    if (!req.file) {
+      console.log(req.file)
+      return res.status(400).json({ error: 'No image file provided' });
+    }
+
+    const image = req.file.buffer; 
+
+    const imageFileName = `${storageSubdirectory}/${Date.now()}_slika.jpg`;
+    const bucket = storage.bucket(storageBucketName);
+
+    await bucket.file(imageFileName).save(image, {
+      metadata: {
+        contentType: 'image/jpeg',
+      },
+    });
+
+    const imageUrl = await bucket.file(imageFileName).getSignedUrl({
+      action: 'read',
+      expires: '01-01-2100',
+    });
+
+
+    const kovanecRef = await db.collection('kovanecSeznam').add({
+      ime,
+      opis,
+      kolicina,
+      slika: imageUrl[0],
+    });
+
+    res.status(201).json({ message: 'Kovanec uspešno dodan', id: kovanecRef.id });
+  } catch (error) {
+    console.error('Napaka pri dodajanju kovanca:', error);
+    res.status(500).json({ error: 'Napaka pri dodajanju kovanca' });
+  }
+});
+
+app.get("/pridobiKovanceTrznica", async (req: Request, res: Response) => {
+  try {
+    const snapshot = await db.collection("kovanecSeznam").get();
+
+    const documents = snapshot.docs.map(doc => ({
+      id: doc.id,
+      data: doc.data(),
+    }));
+
+    res.status(200).json({ message: "Dokumenti uspešno pridobljeni", documents });
+  } catch (error) {
+    console.error("Napaka pri pridobivanju dokumentov:", error);
+    res.status(500).json({ error: "Napaka notranjega strežnika" });
+  }
+});
+
+
 
 app.post("/login", async (req:Request, res:Response) => {
 
