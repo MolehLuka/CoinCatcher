@@ -22,8 +22,8 @@ const CameraStack = createStackNavigator();
 function CameraStackNavigator() {
   return (
     <CameraStack.Navigator>
-      <CameraStack.Screen name="CameraScreen" component={CameraScreen} />
-      <CameraStack.Screen name="ScannedCoinInfo" component={ScannedCoinInfo} />
+      <CameraStack.Screen name="CameraScreen" component={CameraScreen} options={{headerShown: false}}/>
+      <CameraStack.Screen name="ScannedCoinInfo" component={ScannedCoinInfo} options={{headerShown: false}}/>
     </CameraStack.Navigator>
   );
 }
