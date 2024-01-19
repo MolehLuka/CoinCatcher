@@ -3,6 +3,7 @@ import { Button, Image, View, Text, TextInput, StyleSheet, Keyboard, TouchableWi
 import { Icon } from 'react-native-elements';
 import * as ImagePicker from 'expo-image-picker';
 import axios, { AxiosResponse } from 'axios';
+import { baseUrl } from '../../global';
 
 const DodajKovanecScreen = () => {
   const [ime, setIme] = useState('');
@@ -11,7 +12,7 @@ const DodajKovanecScreen = () => {
   const [slika, setSlika] = useState('');
 
   const [image, setImage] = useState(null);
-  const baseUrl = "http://164.8.207.161:3000";
+
 
   const pickImage = async (fromCamera: boolean) => {
     let result;

@@ -14,6 +14,7 @@ import { CameraOverlay } from "./cameraoverlay";
 import { ActivityIndicator } from "react-native";
 
 import { StackNavigationProp } from "@react-navigation/stack";
+import { baseUrl } from "../../global";
 
 type RootStackParamList = {
   ScannedCoinInfo: { coinData: any };
@@ -74,7 +75,7 @@ export const CameraScreen: React.FC<Props> = ({ navigation }) => {
   const identifyCoin = async () => {
     setLoading(true);
     try {
-      const response = await fetch("http://192.168.1.107:3000/random-coin");
+      const response = await fetch(`${baseUrl}/random-coin`);
       const data = await response.json();
       setCoinData(data);
 
