@@ -16,8 +16,6 @@ import { ActivityIndicator } from "react-native";
 import { StackNavigationProp } from "@react-navigation/stack";
 import { baseUrl } from "../../global";
 
-import { baseUrl } from "../../global";
-
 type RootStackParamList = {
   ScannedCoinInfo: { coinData: any };
   CameraScreen: undefined;
