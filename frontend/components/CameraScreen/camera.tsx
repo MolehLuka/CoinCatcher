@@ -10,6 +10,7 @@ import {
 import { Camera, CameraType } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import CameraButton from "./camerabutton";
+import { CameraCaptureButton } from "./cameracapturebutton";
 import { CameraOverlay } from "./cameraoverlay";
 import { ActivityIndicator } from "react-native";
 
@@ -32,7 +33,13 @@ type Props = {
 
 export const CameraScreen: React.FC<Props> = ({ navigation }) => {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
+
   const [image, setImage] = useState<string | null>(null);
+  const [frontImage, setFrontImage] = useState<string | null>(null);
+  const [backImage, setBackImage] = useState<string | null>(null);
+  const [isFrontOfCoin, setIsFrontOfCoin] = useState(true); // To track which side of the coin to capture
+
+
   const [cameraType, setCameraType] = useState(CameraType.back);
   const cameraRef = useRef<Camera>(null);
 
@@ -53,9 +60,14 @@ export const CameraScreen: React.FC<Props> = ({ navigation }) => {
         const data = cameraRef.current
           ? await (cameraRef.current as Camera).takePictureAsync()
           : null;
-        console.log(data);
+  
         if (data) {
-          setImage(data.uri);
+          if (isFrontOfCoin) {
+            setFrontImage(data.uri);
+            setIsFrontOfCoin(false); // Next capture will be for the back
+          } else {
+            setBackImage(data.uri);
+          }
         }
       } catch (error) {
         console.log(error);
@@ -68,7 +80,11 @@ export const CameraScreen: React.FC<Props> = ({ navigation }) => {
   }
 
   const handleRetake = () => {
-    setImage(null); // Reset image state to bring back camera
+    // Reset everything
+    setImage(null);
+    setFrontImage(null);
+    setBackImage(null);
+    setIsFrontOfCoin(true);
   };
 
   const identifyCoin = async () => {
@@ -91,44 +107,44 @@ export const CameraScreen: React.FC<Props> = ({ navigation }) => {
 
   // Render logic
   return (
-    <View style={styles.container}>
-      {!image ? (
+    <View style={!frontImage || !backImage ? styles.cameraContainer : styles.previewContainer}>
+      {!frontImage || !backImage ? (
         <Camera style={styles.camera} type={cameraType} ref={cameraRef}>
           <CameraOverlay />
+          <Text style={styles.instructions}>
+            {isFrontOfCoin ? "Capture front of coin" : "Capture back of coin"}
+          </Text>
+          {!loading && (
+            <View style={styles.buttonContainer}>
+              <CameraCaptureButton onPress={takePicture} />
+            </View>
+          )}
         </Camera>
       ) : (
         <>
-          <View style={styles.previewContainer}>
-            <Image source={{ uri: image }} style={styles.preview} />
-          </View>
-          <View style={styles.buttonContainer}>
-            {!loading ? (
-              <Button title={"Identify coin"} onPress={identifyCoin} color={"white"} />
-            ) : (
-              <ActivityIndicator size="large" color="#0000ff" />
-            )}
-            <Button title={"Retake"} onPress={handleRetake} color={"white"} />
-          </View>
+          <Image source={{ uri: frontImage }} style={styles.preview} />
+          <Image source={{ uri: backImage }} style={styles.preview} />
         </>
       )}
-      {!image && !loading && (
-        <CameraButton
-          title={"Capture coin"}
-          icon="camera"
-          onPress={takePicture}
-          color={"white"}
-        />
+      {frontImage && backImage && (
+        <View style={styles.buttonContainer}>
+          {!loading ? (
+            <Button title={"Identify coin"} onPress={identifyCoin} color={"white"} />
+          ) : (
+            <ActivityIndicator size="large" color="#0000ff" />
+          )}
+          <Button title={"Retake"} onPress={handleRetake} color={"white"} />
+        </View>
       )}
     </View>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {
+  cameraContainer: {
     flex: 1,
     backgroundColor: "#000",
     justifyContent: "center",
-    paddingBottom: 20,
   },
   camera: {
     flex: 1,
@@ -136,21 +152,31 @@ const styles = StyleSheet.create({
   },
   previewContainer: {
     flex: 1,
+    backgroundColor: "#000",
     justifyContent: "center",
-    alignItems: "center",
-    overflow: "hidden",
+    paddingBottom: 100,
   },
   preview: {
     width: "150%",
-    height: "150%",
+    height: "50%",
     resizeMode: 'cover',
     alignSelf: 'center',
   },
   buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    paddingHorizontal: 20,
-    paddingVertical: 10,
+    position: 'absolute',
+    bottom: -15,
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: 'transparent',
+  },
+  instructions: {
+    position: 'absolute',
+    color: 'white',
+    fontSize: 18,
+    bottom: 120, // Adjust as needed
+    alignSelf: 'center',
   },
 });
