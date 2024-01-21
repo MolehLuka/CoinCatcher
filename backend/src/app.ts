@@ -41,7 +41,6 @@ const firebaseConfig = {
   messagingSenderId: "606108606548",
   appId: "1:606108606548:web:acd2cdca1c7c5031254dc1",
 };
-
 const appFirebase = initializeApp(firebaseConfig);
 const auth = getAuth(appFirebase);
 const db = admin.firestore();
@@ -69,15 +68,19 @@ app.post("/test", async (req: Request, res: Response) => {
 });
 
 app.post("/register", async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+  
+  const { email, password , firstName, lastName, telefonskaSt} = req.body;
   try {
     const userCredential = await admin.auth().createUser({
       email,
       password,
     });
 
-    await db.collection("users").doc(userCredential.uid).set({
+    await db.collection('users').doc(userCredential.uid).set({
       email: userCredential.email,
+      firstName: firstName,
+      lastName: lastName,
+      telefonskaSt: telefonskaSt
     });
 
     res
@@ -91,12 +94,116 @@ app.post("/register", async (req: Request, res: Response) => {
   }
 });
 
-app.post("/login", async (req: Request, res: Response) => {
-  const { email, password } = req.body;
+app.get("/getUser/:uid", async (req: Request, res: Response) => {
+  const { uid } = req.params;
+
   try {
-    const user = await signInWithEmailAndPassword(auth, email, password);
-    res.status(200).json({ message: "Prijava uspela", user: user });
+
+    const userDoc = await db.collection('users').doc(uid).get();
+
+    if (userDoc.exists) {
+      const userData = userDoc.data();
+      res.status(200).json({ message: "User data retrieved successfully", user: userData });
+    } else {
+      res.status(404).json({ error: "User not found", message: "User data not available for the given UID" });
+    }
   } catch (error: any) {
+    console.error("Error retrieving user data:", error.message);
+    res.status(500).json({ error: "Error retrieving user data", message: error.message });
+  }
+});
+
+app.post("/logout/:uid", async (req, res) => {
+  const { uid } = req.params;
+  console.log(uid)
+  try {
+
+   await admin.auth().revokeRefreshTokens(uid);
+
+    res.status(200).json({ message: "Logout successful" });
+  } catch (error: any) {
+    console.error("Error during logout:", error.message);
+    res.status(500).json({ error: "Internal Server Error", message: error.message });
+  }
+});
+
+
+const storage = admin.storage();
+const storageBucketName = 'gs://coincatcher-7807a.appspot.com'; 
+const storageSubdirectory = 'images';
+
+const multer = require('multer');
+
+const multerStorage = multer.memoryStorage();
+const upload = multer({ storage: multerStorage });
+
+app.post("/dodajSvojKovanec", upload.single('slika'), async (req: Request , res: Response) => {
+  try {
+    const { ime, opis, kolicina } = req.body;
+
+    if (!req.file) {
+      console.log(req.file)
+      return res.status(400).json({ error: 'No image file provided' });
+    }
+
+    const image = req.file.buffer; 
+
+    const imageFileName = `${storageSubdirectory}/${Date.now()}_slika.jpg`;
+    const bucket = storage.bucket(storageBucketName);
+
+    await bucket.file(imageFileName).save(image, {
+      metadata: {
+        contentType: 'image/jpeg',
+      },
+    });
+
+    const imageUrl = await bucket.file(imageFileName).getSignedUrl({
+      action: 'read',
+      expires: '01-01-2100',
+    });
+
+
+    const kovanecRef = await db.collection('kovanecSeznam').add({
+      ime,
+      opis,
+      kolicina,
+      slika: imageUrl[0],
+    });
+
+    res.status(201).json({ message: 'Kovanec uspešno dodan', id: kovanecRef.id });
+  } catch (error) {
+    console.error('Napaka pri dodajanju kovanca:', error);
+    res.status(500).json({ error: 'Napaka pri dodajanju kovanca' });
+  }
+});
+
+app.get("/pridobiKovanceTrznica", async (req: Request, res: Response) => {
+  try {
+    const snapshot = await db.collection("kovanecSeznam").get();
+
+    const documents = snapshot.docs.map(doc => ({
+      id: doc.id,
+      data: doc.data(),
+    }));
+
+    res.status(200).json({ message: "Dokumenti uspešno pridobljeni", documents });
+  } catch (error) {
+    console.error("Napaka pri pridobivanju dokumentov:", error);
+    res.status(500).json({ error: "Napaka notranjega strežnika" });
+  }
+});
+
+
+
+app.post("/login", async (req:Request, res:Response) => {
+
+  const {email, password} = req.body;
+  console.log(email,password)
+  try {
+    const user = await signInWithEmailAndPassword(auth, email, password)
+    console.log(user)
+    res.status(200).json({message: "Prijava uspela", user: user.user.uid})
+  }catch (error: any){
     console.error("Napaka pri prijavi:", error.message);
     res
       .status(500)
@@ -104,28 +211,6 @@ app.post("/login", async (req: Request, res: Response) => {
   }
 });
 
-app.get("/random-coin", (req, res) => {
-  // Read the JSON file
-  fs.readFile(
-    path.join(__dirname, "..", "data", "kovanci.json"),
-    "utf8",
-    (err: any, data: string) => {
-      if (err) {
-        res.status(500).send("Server error reading coin data");
-        return;
-      }
-
-      // Parse the JSON data
-      const coins = JSON.parse(data);
-
-      // Select a random coin
-      const randomCoin = coins[Math.floor(Math.random() * coins.length)];
-
-      // Return the random coin data
-      res.json(randomCoin);
-    }
-  );
-});
 
 app.get("/categories", (req, res) => {
   res.json(["All", "Issuer", "Years", "Value", "Currency"]);
@@ -189,6 +274,21 @@ app.get("/filter/:category/:value", (req, res) => {
       res.json(filteredCoins);
     }
   );
+  });
+app.get('/random-coin', async (req, res) => {
+  try {
+    const kovanciData = await db.collection('kovanciData').get();
+    const coins: any[] = [];
+    kovanciData.forEach((doc) => {
+      coins.push({ id: doc.id, ...doc.data() });
+    });
+
+    // Select a random coin
+    const randomCoin = coins[Math.floor(Math.random() * coins.length)];
+    res.json(randomCoin);
+  } catch (err) {
+    res.status(500).send('Server error accessing Firestore');
+  }
 });
 
 app.listen(PORT, () => {

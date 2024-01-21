@@ -1,21 +1,23 @@
+import axios from 'axios';
 import * as React from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
-import Coin from '../Coin/Coin';
+import { View, Text, ScrollView } from 'react-native';
+import { StyleSheet } from 'react-native';
 import Filter from '../Filter/Filter';
 
+
 export default function HomeScreen() {
+
   const url = "http://192.168.1.5:3000";
 
   return (
     <ScrollView>
     <View style={styles.container}>
       <Text style={[]}>Home Screen</Text>
-      <Filter url={url}/>
-      {/* <Coin url={url}/> */}
     </View>
     </ScrollView>
   );
 }
+
 
 const styles = StyleSheet.create({
   container: {
