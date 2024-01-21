@@ -18,7 +18,6 @@ const DodajKovanecScreen = ({ navigation }: RegisterProps) => {
 
   const [image, setImage] = useState(null);
 
-
   const pickImage = async (fromCamera: boolean) => {
     let result;
     if (fromCamera) {

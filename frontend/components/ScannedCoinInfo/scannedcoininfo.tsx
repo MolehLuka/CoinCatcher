@@ -1,6 +1,6 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
-import { Image } from "react-native";
+import { Image, TouchableOpacity } from "react-native";
 
 const ScannedCoinInfo = ({ route }: { route: any }) => {
   const { coinData } = route.params;
@@ -21,7 +21,11 @@ const ScannedCoinInfo = ({ route }: { route: any }) => {
       <Text
         style={styles.coinName}
       >{`${coinData.issuer} ${coinData.value}`}</Text>
-      {/* ... other details ... */}
+      <TouchableOpacity style={styles.addToCollectionButton}>
+        <Text style={styles.addToCollectionButtonText}>
+          + Add to Collection
+        </Text>
+      </TouchableOpacity>
     </View>
   );
 };
@@ -49,6 +53,25 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     textAlign: "center",
     marginVertical: 20, // Adjust as needed
+  },
+  addToCollectionButton: {
+    position: "absolute", // Position over everything else
+    right: 20, // 20 points from the right edge of the screen
+    bottom: 20, // 20 points from the bottom edge of the screen
+    backgroundColor: "#FFA500", // Orange color
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 20,
+    elevation: 3, // Add elevation for Android shadow
+    shadowColor: "#000000", // Shadow for iOS
+    shadowOffset: { width: 0, height: 2 }, // Shadow for iOS
+    shadowOpacity: 0.3, // Shadow for iOS
+    shadowRadius: 2, // Shadow for iOS
+  },
+  addToCollectionButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
   },
   // Add more styles as needed
 });
