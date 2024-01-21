@@ -1,7 +1,8 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, Image } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Image, Button, TouchableOpacity } from 'react-native';
 import { baseUrl } from '../../global';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 
 interface MyCoin {
   id: string;
@@ -12,6 +13,7 @@ interface MyCoin {
     slika: string;
   };
 }
+
 
 const CoinItem: React.FC<{ coin: MyCoin }> = ({ coin }) => (
   <View style={styles.coinContainer}>
@@ -24,7 +26,12 @@ const CoinItem: React.FC<{ coin: MyCoin }> = ({ coin }) => (
   </View>
 );
 
-const Trznica = () => {
+interface RegisterProps {
+  navigation: NativeStackNavigationProp<any>;
+}
+
+
+const Trznica = ({ navigation }: RegisterProps) => {
   const [coinData, setCoinData] = useState<MyCoin[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -34,7 +41,7 @@ const Trznica = () => {
         const response = await axios.get(`${baseUrl}/pridobiKovanceTrznica`);
         const documents = response.data.documents;
 
-        // Map over the documents array and extract relevant data
+     
         const newCoinData: MyCoin[] = documents.map((document: any) => ({
           id: document.id,
           data: {
@@ -45,7 +52,7 @@ const Trznica = () => {
           },
         }));
 
-        // Set the new coin data into the state
+
         setCoinData(newCoinData);
         setLoading(false);
       } catch (error) {
@@ -57,18 +64,24 @@ const Trznica = () => {
     fetchCoinData();
   }, [coinData]);
 
+  function handleDodaj() {
+    navigation.navigate('DodajTrznica');
+  }
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Kriptovalute</Text>
-      {loading ? (
-        <Text>Loading...</Text>
-      ) : (
-        <FlatList
-          data={coinData}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => <CoinItem coin={item} />}
-        />
-      )}
+
+    <TouchableOpacity
+    onPress={handleDodaj}
+    style={styles.registerButton}
+  >
+    <Text style={styles.buttonText}>Dodaj</Text>
+  </TouchableOpacity><FlatList
+    data={coinData}
+    keyExtractor={(item) => item.id}
+    renderItem={({ item }) => <CoinItem coin={item} />}
+  />
+   
     </View>
   );
 };
@@ -94,8 +107,8 @@ const styles = StyleSheet.create({
     marginBottom: 12,
   },
   coinImage: {
-    width: 50,
-    height: 50,
+    width: 120,
+    height: 120,
     borderRadius: 25,
     marginRight: 12,
   },
@@ -115,6 +128,18 @@ const styles = StyleSheet.create({
   coinQuantity: {
     fontSize: 16,
     color: '#333',
+  },
+  registerButton: {
+    backgroundColor: 'gold',
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    borderRadius: 5,
+    marginTop: 10,
+  },
+  buttonText: {
+    color: "black",
+    textAlign: "center",
+    fontSize: 16,
   },
 });
 

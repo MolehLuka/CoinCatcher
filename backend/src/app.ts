@@ -64,7 +64,7 @@ app.post("/test", async (req: Request, res: Response) => {
 
 app.post("/register", async (req: Request, res: Response) => {
   
-  const { email, password } = req.body;
+  const { email, password , firstName, lastName, telefonskaSt} = req.body;
   try {
     const userCredential = await admin.auth().createUser({
       email,
@@ -72,7 +72,10 @@ app.post("/register", async (req: Request, res: Response) => {
     });
 
     await db.collection('users').doc(userCredential.uid).set({
-      email: userCredential.email
+      email: userCredential.email,
+      firstName: firstName,
+      lastName: lastName,
+      telefonskaSt: telefonskaSt
     });
 
     res.status(200).json({ message: "Registracija uspešna", user: userCredential });
@@ -81,6 +84,41 @@ app.post("/register", async (req: Request, res: Response) => {
     res.status(500).json({ error: "Napaka pri registraciji:", message: error.message });
   }
 });
+
+app.get("/getUser/:uid", async (req: Request, res: Response) => {
+  const { uid } = req.params;
+
+  try {
+
+    const userDoc = await db.collection('users').doc(uid).get();
+
+    if (userDoc.exists) {
+      const userData = userDoc.data();
+      res.status(200).json({ message: "User data retrieved successfully", user: userData });
+    } else {
+      res.status(404).json({ error: "User not found", message: "User data not available for the given UID" });
+    }
+  } catch (error: any) {
+    console.error("Error retrieving user data:", error.message);
+    res.status(500).json({ error: "Error retrieving user data", message: error.message });
+  }
+});
+
+app.post("/logout/:uid", async (req, res) => {
+  const { uid } = req.params;
+  console.log(uid)
+  try {
+
+   await admin.auth().revokeRefreshTokens(uid);
+
+    res.status(200).json({ message: "Logout successful" });
+  } catch (error: any) {
+    console.error("Error during logout:", error.message);
+    res.status(500).json({ error: "Internal Server Error", message: error.message });
+  }
+});
+
+
 const storage = admin.storage();
 const storageBucketName = 'gs://coincatcher-7807a.appspot.com'; 
 const storageSubdirectory = 'images';
