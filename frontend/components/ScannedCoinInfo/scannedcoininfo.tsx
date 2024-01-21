@@ -1,6 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Image, TouchableOpacity } from "react-native";
+import Coin from "../Coin/Coin";
 
 const ScannedCoinInfo = ({ route }: { route: any }) => {
   const { coinData } = route.params;
@@ -26,6 +27,7 @@ const ScannedCoinInfo = ({ route }: { route: any }) => {
           + Add to Collection
         </Text>
       </TouchableOpacity>
+      <Coin url={route}/>
     </View>
   );
 };

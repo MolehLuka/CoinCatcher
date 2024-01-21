@@ -1,26 +1,29 @@
 import express, { Request, Response } from "express";
-import admin from 'firebase-admin'
+import admin from "firebase-admin";
 import { initializeApp } from "firebase/app";
-import { getAuth, createUserWithEmailAndPassword, Auth, signInWithEmailAndPassword } from "firebase/auth";
-var cors = require('cors');
+import {
+  getAuth,
+  createUserWithEmailAndPassword,
+  Auth,
+  signInWithEmailAndPassword,
+} from "firebase/auth";
+var cors = require("cors");
 
 const app = express();
-const path = require('path');
-const fs = require('fs');
+const path = require("path");
+const fs = require("fs");
 
 app.use(express.json());
-app.use('/data/images', express.static(path.join(__dirname, '..', 'data', 'images')));
+app.use("/data/images", express.static(path.join(__dirname, "data/images")));
 
 const corsOptions = {
-  origin: '*',
-  methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+  origin: "*",
+  methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
   credentials: true,
   optionsSuccessStatus: 204,
 };
 
 app.use(cors(corsOptions));
-
-
 
 const PORT = process.env.PORT || 3000;
 
@@ -36,7 +39,7 @@ const firebaseConfig = {
   projectId: "coincatcher-7807a",
   storageBucket: "coincatcher-7807a.appspot.com",
   messagingSenderId: "606108606548",
-  appId: "1:606108606548:web:acd2cdca1c7c5031254dc1"
+  appId: "1:606108606548:web:acd2cdca1c7c5031254dc1",
 };
 const appFirebase = initializeApp(firebaseConfig);
 const auth = getAuth(appFirebase);
@@ -55,7 +58,9 @@ app.post("/test", async (req: Request, res: Response) => {
 
     console.log("Dokument ID:", result.id);
 
-    res.status(200).json({ message: "Dokument uspešno dodan", documentId: result.id });
+    res
+      .status(200)
+      .json({ message: "Dokument uspešno dodan", documentId: result.id });
   } catch (error) {
     console.error("Napaka pri dodajanju dokumenta:", error);
     res.status(500).json({ error: "Napaka notranjega strežnika," });
@@ -68,7 +73,7 @@ app.post("/register", async (req: Request, res: Response) => {
   try {
     const userCredential = await admin.auth().createUser({
       email,
-      password
+      password,
     });
 
     console.log(firstName)
@@ -80,10 +85,14 @@ app.post("/register", async (req: Request, res: Response) => {
       telefonskaSt: telefonskaSt
     });
 
-    res.status(200).json({ message: "Registracija uspešna", user: userCredential });
+    res
+      .status(200)
+      .json({ message: "Registracija uspešna", user: userCredential });
   } catch (error: any) {
     console.error("Napaka pri registraciji:", error.message);
-    res.status(500).json({ error: "Napaka pri registraciji:", message: error.message });
+    res
+      .status(500)
+      .json({ error: "Napaka pri registraciji:", message: error.message });
   }
 });
 
@@ -199,10 +208,76 @@ app.post("/login", async (req:Request, res:Response) => {
     res.status(200).json({message: "Prijava uspela", user: user.user.uid})
   }catch (error: any){
     console.error("Napaka pri prijavi:", error.message);
-    res.status(500).json({ error: "Napaka pri prijavi:", message: error.message });
+    res
+      .status(500)
+      .json({ error: "Napaka pri prijavi:", message: error.message });
   }
-})
+});
 
+
+app.get("/categories", (req, res) => {
+  res.json(["All", "Issuer", "Years", "Value", "Currency"]);
+});
+
+app.get("/allCoins", (req, res) => {
+  fs.readFile(
+    path.join(__dirname, "..", "data", "kovanci.json"),
+    "utf8",
+    (err: any, data: string) => {
+      if (err) {
+        res.status(500).send("Server error reading coin data");
+        return;
+      }
+      const coins = JSON.parse(data);
+      res.json(coins);
+    }
+  );
+});
+
+app.get("/filter/:category", (req, res) => {
+  fs.readFile(
+    path.join(__dirname, "..", "data", "kovanci.json"),
+    "utf8",
+    (err: any, data: string) => {
+      if (err) {
+        res.status(500).send("Server error reading coin data");
+        return;
+      }
+      const coins = JSON.parse(data);
+      const category = req.params.category.toLowerCase();
+      if (category === "all") {
+        res.json(coins);
+        return;
+      } else {
+        const values = coins.map((coin: any) => coin[category]);
+        const uniqueValues = [...new Set(values)];
+
+        res.json(uniqueValues);
+      }
+    }
+  );
+});
+
+app.get("/filter/:category/:value", (req, res) => {
+  fs.readFile(
+    path.join(__dirname, "..", "data", "kovanci.json"),
+    "utf8",
+    (err: any, data: string) => {
+      if (err) {
+        res.status(500).send("Server error reading coin data");
+        return;
+      }
+      const coins = JSON.parse(data);
+      const category = req.params.category.toLowerCase();
+      const value = req.params.value;
+      const filteredCoins = coins.filter(
+        (coin: any) => coin[category] === value
+      );
+
+      res.json(filteredCoins);
+    }
+  );
+  });
 app.get('/random-coin', async (req, res) => {
   try {
     const kovanciData = await db.collection('kovanciData').get();
