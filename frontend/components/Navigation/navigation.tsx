@@ -16,7 +16,12 @@ const AppNavigator = () => {
   return (
     <NavigationContainer>
       <Tab.Navigator>
-        <Tab.Screen name="Home" component={HomeScreen} />
+        <Tab.Screen name="Home" component={HomeScreen}
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <Icon name="store-search" type="material-community" color={color} size={size} />
+            ),
+          }} />
         <Tab.Screen
           name="Camera"
           component={CameraScreen}
@@ -26,7 +31,12 @@ const AppNavigator = () => {
             ),
           }}
         />
-        <Tab.Screen name="Collection" component={CollectionScreen} />
+        <Tab.Screen name="Collection" component={CollectionScreen} 
+          options={{
+            tabBarIcon: ({ color, size }) => (
+              <Icon name="circle-multiple" type="material-community" color={color} size={size} />
+            ),
+          }}/>
       </Tab.Navigator>
     </NavigationContainer>
   );
