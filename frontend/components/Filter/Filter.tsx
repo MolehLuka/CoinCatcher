@@ -1,20 +1,31 @@
 import axios from "axios";
 import * as React from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import { View, Text, StyleSheet, ScrollView, FlatList } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
-import { ICoin } from "../../moduls/ICoin";
+import CoinItem from "./CoinItem";
+import { baseUrl } from "../../global";
 
-export default function Filter({ url }: { url: string }) {
+interface MyCoin {
+  id: string;
+  data: {
+    ime: string;
+    kolicina: string;
+    opis: string;
+    slika: string;
+  };
+}
+
+export default function Filter() {
   const [categoryOptions, setCategoryOptions] = React.useState<string[]>([]);
   const [selectedFilter, setSelectedFilter] = React.useState<string>("");
   const [categoryFilters, setCategoryFilters] = React.useState<string[]>([]);
   const [selectedValue, setSelectedValue] = React.useState<string>("");
-  const [coins, setCoins] = React.useState([]);
-  const [first, setFirst] = React.useState<boolean>(true);
+  const [coinData, setCoinData] = React.useState<MyCoin[]>([]);
+  const [filteredCoins, setFilteredCoins] = React.useState<MyCoin[]>(coinData);
 
   const placeholderCategory = {
     label: "Select a category...",
-    value: null,
+    value: "vsi",
   };
   const placeholderValue = {
     label: "Select a value...",
@@ -22,65 +33,72 @@ export default function Filter({ url }: { url: string }) {
   };
 
   React.useEffect(() => {
+    const fetchCoinData = async () => {
+      try {
+        const response = await axios.get(`${baseUrl}/pridobiKovanceTrznica`);
+        const documents = response.data.documents;
+
+        const newCoinData: MyCoin[] = documents.map((document: any) => ({
+          id: document.id,
+          data: {
+            ime: document.data.ime,
+            kolicina: document.data.kolicina,
+            opis: document.data.opis,
+            slika: document.data.slika,
+          },
+        }));
+
+        setCoinData(newCoinData);
+      } catch (error) {
+        console.error(
+          "Napaka pri pridobivanju podatkov o kriptovalutah",
+          error
+        );
+      }
+    };
+
+    fetchCoinData();
+  }, []);
+
+  React.useEffect(() => {
     axios
-      .get(`${url}/categories`)
+      .get(`${baseUrl}/categories`)
       .then((response) => {
         setCategoryOptions(response.data);
       })
       .catch((error) => {
         console.log("Error:", error.message);
       });
-    axios
-    .get(`${url}/allCoins`)
-    .then((response) => {
-      setCoins(response.data);
-        setFirst(false);
-    })
-    .catch((error) => {
-      console.log("Error:", error.message);
-    });
   }, []);
 
   React.useEffect(() => {
-    // Fetch all coins when 'All' is selected
-    if (selectedFilter === 'All') {
-      axios.get(`${url}/allCoins`)
-        .then(response => {
-          setCoins(response.data);
-          setCategoryFilters([]); // Reset category filters
-        })
-        .catch(error => {
-          console.log('Error:', error.message);
-        });
+    type CoinDataKey = "ime" | "kolicina" | "opis";
+    if (selectedFilter && coinData.length > 0) {
+      const filterValues = Array.from(
+        new Set(
+          coinData.map(
+            (coin: MyCoin) => coin.data[selectedFilter as CoinDataKey]
+          )
+        )
+      );
+      setCategoryFilters(filterValues);
     }
-    // Fetch filter options for a specific category
-    else if (selectedFilter) {
-      axios.get(`${url}/filter/${selectedFilter}`)
-        .then(response => {
-          setCategoryFilters(response.data);
-        })
-        .catch(error => {
-          console.log('Error:', error.message);
-        });
-    }
-  }, [selectedFilter]);
+  }, [selectedFilter, coinData]);
 
   React.useEffect(() => {
-    if (selectedValue) {
-      axios
-        .get(`${url}/filter/${selectedFilter}/${selectedValue}`)
-        .then((response) => {
-          setCoins(response.data);
-        })
-        .catch((error) => {
-          console.log("Error:", error.message);
-        });
+    type CoinDataKey = "ime" | "kolicina" | "opis";
+    if (selectedValue && selectedFilter && coinData.length > 0) {
+      const filteredCoins = coinData.filter(
+        (coin: MyCoin) =>
+          coin.data[selectedFilter as CoinDataKey] === selectedValue
+      );
+      setFilteredCoins(filteredCoins);
     }
-  }, [selectedValue, selectedFilter]);
+  }, [selectedValue, selectedFilter, coinData]);
 
   return (
-    <View style={styles.row}>
-      <View style={styles.big_box}>
+    <View style={[styles.flex]}>
+      <View style={[]}>
         <Text>Filter</Text>
         <RNPickerSelect
           placeholder={placeholderCategory}
@@ -94,8 +112,8 @@ export default function Filter({ url }: { url: string }) {
           }}
           value={selectedFilter}
         />
-        {selectedFilter && selectedFilter!=='All' && (
-          <View style={styles.big_box}>
+        {selectedFilter && selectedFilter !== "vsi" && (
+          <View style={[]}>
             <RNPickerSelect
               placeholder={placeholderValue}
               items={categoryFilters.map((category) => ({
@@ -109,33 +127,21 @@ export default function Filter({ url }: { url: string }) {
             />
           </View>
         )}
-
-        {(selectedFilter === "All" || first) && (
-          <ScrollView>
-            {coins.map((coin: ICoin, index) => (
-              <View key={index} style={styles.row}>
-                <Text>{coin.value}</Text>
-                <Text>{coin.currency}</Text>
-                <Text>{coin.issuer}</Text>
-                <Text>{coin.years}</Text>
-              </View>
-            ))}
-          </ScrollView>
-        )}
-
-        {selectedValue && (
-          <ScrollView>
-            {coins.map((coin: ICoin, index) => (
-              <View key={index} style={styles.row}>
-                <Text>{coin.value}</Text>
-                <Text>{coin.currency}</Text>
-                <Text>{coin.issuer}</Text>
-                <Text>{coin.years}</Text>
-              </View>
-            ))}
-          </ScrollView>
-        )}
       </View>
+      {selectedFilter === "vsi" && (
+                  <FlatList
+                  data={coinData}
+                  keyExtractor={(item) => item.id}
+                  renderItem={({ item }) => <CoinItem coin={item} />}
+                />
+      )}
+      {selectedValue && (
+          <FlatList
+            data={filteredCoins}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => <CoinItem coin={item} />}
+          />
+        )}
     </View>
   );
 }
@@ -157,4 +163,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
   },
+  flex: {
+    flex: 1,
+  }
 });
