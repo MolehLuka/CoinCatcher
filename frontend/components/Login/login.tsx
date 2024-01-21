@@ -21,6 +21,7 @@ function Login({ navigation }: LoginProps) {
 
   const handleLogin = async (): Promise<void> => {
     try {
+  
       const response: AxiosResponse = await axios.post(`${baseUrl}/login`, {
         email: email,
         password: password,
@@ -40,6 +41,7 @@ function Login({ navigation }: LoginProps) {
 
       saveData();
       navigation.navigate('App');
+      console.log("x")
       console.log('Odgovor od backend-a:', response.data);
     } catch (error) {
       if (axios.isAxiosError(error)) {

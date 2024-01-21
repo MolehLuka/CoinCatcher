@@ -62,7 +62,7 @@ const Trznica = ({ navigation }: RegisterProps) => {
     };
 
     fetchCoinData();
-  }, [coinData]);
+  }, []);
 
   function handleDodaj() {
     navigation.navigate('DodajTrznica');

@@ -12,6 +12,7 @@ import Register from '../Register/register';
 import Icon from 'react-native-elements/dist/icons/Icon';
 import Trznica from '../Trznica/trznica';
 import DodajKovanecScreen from '../DodajTrznica/dodajtrznica';
+import { CameraScreen } from '../CameraScreen/camera';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -21,7 +22,7 @@ const CameraStack = createStackNavigator();
 function CameraStackNavigator() {
   return (
     <CameraStack.Navigator>
-      <CameraStack.Screen name="CameraScreen" component={ScannedCoinInfo} options={{ headerShown: false }} />
+      <CameraStack.Screen name="CameraScreen" component={CameraScreen} options={{ headerShown: false }} />
       <CameraStack.Screen name="ScannedCoinInfo" component={ScannedCoinInfo} options={{ headerShown: false }} />
     </CameraStack.Navigator>
   );

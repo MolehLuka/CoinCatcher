@@ -32,7 +32,7 @@ function Register({ navigation }: RegisterProps) {
         lastName: lastName,
         telefonskaSt: telefonskaSt
       });
-      navigation.navigate('Home');
+      navigation.navigate('App');
       console.log('Odgovor od backend-a:', response.data);
     } catch (error) {
       if (axios.isAxiosError(error)) {

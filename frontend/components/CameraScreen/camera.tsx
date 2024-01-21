@@ -124,7 +124,7 @@ export const CameraScreen: React.FC<Props> = ({ navigation }) => {
     setButtonsDisabled(true); // gumbi se onemogocijo med identifikacijo
     setLoading(true);
     try {
-      const response = await fetch("http://192.168.1.107:3000/random-coin");
+      const response = await fetch(`${baseUrl}/random-coin`);
       const data = await response.json();
 
       // simulirana 8 sekundna identifikacija

@@ -71,6 +71,8 @@ app.post("/register", async (req: Request, res: Response) => {
       password
     });
 
+    console.log(firstName)
+
     await db.collection('users').doc(userCredential.uid).set({
       email: userCredential.email,
       firstName: firstName,
@@ -170,6 +172,7 @@ app.post("/dodajSvojKovanec", upload.single('slika'), async (req: Request , res:
 
 app.get("/pridobiKovanceTrznica", async (req: Request, res: Response) => {
   try {
+    console.log("Trznica se je klicala")
     const snapshot = await db.collection("kovanecSeznam").get();
 
     const documents = snapshot.docs.map(doc => ({
