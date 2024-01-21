@@ -13,11 +13,11 @@ export default function CurrencyConverter({ coin }: { coin: ICoin }) {
     value: number;
   }>({ key: "", value: 0 });
 
-  const api_base_url = `https://api.frankfurter.app/latest?amount=${coin.value}&from=${coin.currency}`;
+  const api_base_url = `https://api.frankfurter.app/latest?amount=${coin.value}&from=EUR`;
 
   React.useEffect(() => {
     fetchApiAuto();
-  }, [coin.value, coin.currency]);
+  }, [coin.value]);
 
   const placeholder = {
     label: "Select an option...",

@@ -41,12 +41,6 @@ export default function Coin({url}:{url: string}) {
   return (
     <View style={styles.container}>
       <View style={styles.row}>
-      <Text style={styles.white_text}>Coin</Text>
-      </View>
-      <View style={styles.row}>
-      <Text style={styles.white_text}>{JSON.stringify(coin)}</Text>
-      </View>
-      <View style={styles.row}>
       <CurrencyConverter coin={coin}/>
       </View>
     </View>

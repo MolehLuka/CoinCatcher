@@ -3,6 +3,7 @@ import * as React from 'react';
 import { View, Text, ScrollView } from 'react-native';
 import { StyleSheet } from 'react-native';
 import Filter from '../Filter/Filter';
+import ScannedCoinInfo from '../ScannedCoinInfo/scannedcoininfo';
 
 
 export default function HomeScreen() {

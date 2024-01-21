@@ -2,6 +2,7 @@ import React from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Image, TouchableOpacity } from "react-native";
 import Coin from "../Coin/Coin";
+import CurrencyConverter from "../Coin/CurrencyConverter/CurrencyConverter";
 
 const ScannedCoinInfo = ({ route }: { route: any }) => {
   const { coinData } = route.params;
@@ -22,12 +23,14 @@ const ScannedCoinInfo = ({ route }: { route: any }) => {
       <Text
         style={styles.coinName}
       >{`${coinData.issuer} ${coinData.value}`}</Text>
+
+      <CurrencyConverter coin={coinData} />
+
       <TouchableOpacity style={styles.addToCollectionButton}>
         <Text style={styles.addToCollectionButtonText}>
           + Add to Collection
         </Text>
       </TouchableOpacity>
-      <Coin url={route}/>
     </View>
   );
 };
