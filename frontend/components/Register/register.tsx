@@ -22,7 +22,7 @@ function Register({ navigation }: RegisterProps) {
   const [telefonskaSt, setTelefonskaSt] = useState("")
 
   const [isModalVisible, setModalVisible] = useState(false);
-
+//x xx x
   const handleRegister = async (): Promise<void> => {
     try {
       const response: AxiosResponse = await axios.post(`${baseUrl}/register`, {
