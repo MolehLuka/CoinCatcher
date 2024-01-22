@@ -24,15 +24,21 @@ const ScannedCoinInfo = ({ route }: { route: any }) => {
         style={styles.coinName}
       >{`${coinData.issuer} ${coinData.value}`}</Text>
 
-      <Text style={styles.detailText}>To check detailed information about the coin, add it to a collection!</Text>
+      <View style={[]}>
+        <TouchableOpacity style={styles.addToCollectionButton}>
+          <Text style={styles.addToCollectionButtonText}>
+            + Add to Collection
+          </Text>
+        </TouchableOpacity>
+      </View>
 
-      <CurrencyConverter coin={coinData} />
+      <Text style={styles.detailText}>
+        To check detailed information about the coin, add it to a collection!
+      </Text>
 
-      <TouchableOpacity style={styles.addToCollectionButton}>
-        <Text style={styles.addToCollectionButtonText}>
-          + Add to Collection
-        </Text>
-      </TouchableOpacity>
+      <View style={[]}>
+        <CurrencyConverter coin={coinData} />
+      </View>
     </View>
   );
 };
@@ -63,12 +69,14 @@ const styles = StyleSheet.create({
     marginVertical: 20, // Adjust as needed
   },
   addToCollectionButton: {
-    position: "absolute", // Position over everything else
-    right: 20, // 20 points from the right edge of the screen
-    bottom: 20, // 20 points from the bottom edge of the screen
+    // position: "absolute", // Position over everything else
+    // right: 20, // 20 points from the right edge of the screen
+    // bottom: 20, // 20 points from the bottom edge of the screen
     backgroundColor: "#FFA500", // Orange color
     paddingVertical: 10,
     paddingHorizontal: 20,
+    justifyContent: "center",
+    alignItems: "center",
     borderRadius: 20,
     elevation: 3, // Add elevation for Android shadow
     shadowColor: "#000000", // Shadow for iOS
@@ -80,6 +88,7 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 16,
     fontWeight: "bold",
+    
   },
   detailText: {
     fontSize: 14,
@@ -88,7 +97,14 @@ const styles = StyleSheet.create({
     textAlign: "center",
     marginVertical: 20, // Adjust as needed
   },
-  // Add more styles as needed
+  row: {
+    flexDirection: "row",
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 10,
+  },
 });
 
 export default ScannedCoinInfo;
+

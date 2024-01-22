@@ -13,10 +13,12 @@ export default function CurrencyConverter({ coin }: { coin: ICoin }) {
     value: number;
   }>({ key: "", value: 0 });
 
-  const api_base_url = `https://api.frankfurter.app/latest?amount=${coin.value}&from=EUR`;
+  const api_base_url = `https://api.frankfurter.app/latest?amount=${coin.value.split('(')[1].split('E')[0]}&from=EUR`;
 
   React.useEffect(() => {
     fetchApiAuto();
+    console.log('coin.value', coin.value)
+    console.log('parse value', coin.value.split('(')[1].split('E')[0])
   }, [coin.value]);
 
   const placeholder = {
@@ -28,7 +30,7 @@ export default function CurrencyConverter({ coin }: { coin: ICoin }) {
     try {
       const response = await fetch(urlString("USD,GBP"));
       const res = await response.json();
-      console.log(res)
+      console.log('res', res)
       const responseConversions = await fetch(api_base_url);
       const resConversions = await responseConversions.json();
       setEurConversion(Number(res.amount));
@@ -86,8 +88,7 @@ export default function CurrencyConverter({ coin }: { coin: ICoin }) {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    padding: 0,
+    padding: 10,
     color: "white",
     alignItems: "center",
     backgroundColor: "#edebe6",

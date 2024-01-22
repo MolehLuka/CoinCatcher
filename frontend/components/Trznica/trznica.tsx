@@ -81,7 +81,7 @@ const Trznica = ({ navigation }: RegisterProps) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={handleDodaj} style={styles.registerButton}>
-        <Text style={styles.buttonText}>Dodaj</Text>
+        <Text style={styles.buttonText}>+ Dodaj</Text>
       </TouchableOpacity>
       <Filter />
     </View>
@@ -131,16 +131,25 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   registerButton: {
-    backgroundColor: "gold",
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 5,
-    marginTop: 10,
+      // position: "absolute", // Position over everything else
+      // right: 20, // 20 points from the right edge of the screen
+      // bottom: 20, // 20 points from the bottom edge of the screen
+      backgroundColor: "#FFA500", // Orange color
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+      justifyContent: "center",
+      alignItems: "center",
+      borderRadius: 20,
+      elevation: 3, // Add elevation for Android shadow
+      shadowColor: "#000000", // Shadow for iOS
+      shadowOffset: { width: 0, height: 2 }, // Shadow for iOS
+      shadowOpacity: 0.3, // Shadow for iOS
+      shadowRadius: 2, // Shadow for iOS
   },
   buttonText: {
-    color: "black",
-    textAlign: "center",
+    color: "white",
     fontSize: 16,
+    fontWeight: "bold", 
   },
 });
 

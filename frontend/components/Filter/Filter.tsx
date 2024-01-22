@@ -81,6 +81,7 @@ export default function Filter() {
           )
         )
       );
+      console.log(filterValues)
       setCategoryFilters(filterValues);
     }
   }, [selectedFilter, coinData]);
@@ -99,7 +100,6 @@ export default function Filter() {
   return (
     <View style={[styles.flex]}>
       <View style={[]}>
-        <Text>Filter</Text>
         <RNPickerSelect
           placeholder={placeholderCategory}
           items={categoryOptions.map((category) => ({

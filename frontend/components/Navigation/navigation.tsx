@@ -4,7 +4,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import CollectionScreen from '../Collection/collection';
-import HomeScreen from '../HomeScreen/home';
 import ScannedCoinInfo from '../ScannedCoinInfo/scannedcoininfo';
 import Login from '../Login/login';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -34,7 +33,7 @@ function Navigator() {
   return (
 
     <Tab.Navigator>
-      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name="Collection" component={CollectionScreen} />
       <Tab.Screen
           name="Camera"
           component={CameraStackNavigator}
@@ -44,7 +43,6 @@ function Navigator() {
             ),
           }}
         />
-        <Tab.Screen name="Collection" component={CollectionScreen} />
         <Tab.Screen name="Trznica" component={Trznica} />
     </Tab.Navigator>
     
