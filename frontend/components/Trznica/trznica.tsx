@@ -13,7 +13,7 @@ import { baseUrl } from "../../global";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import Filter from "../Filter/Filter";
 
-interface MyCoin {
+export interface MyCoin {
   id: string;
   data: {
     ime: string;
@@ -23,56 +23,20 @@ interface MyCoin {
   };
 }
 
-const CoinItem: React.FC<{ coin: MyCoin }> = ({ coin }) => (
-  <View style={styles.coinContainer}>
-    <Image source={{ uri: coin.data.slika }} style={styles.coinImage} />
-    <View style={styles.coinInfo}>
-      <Text style={styles.coinName}>{coin.data.ime}</Text>
-      <Text style={styles.coinDescription}>{coin.data.opis}</Text>
-      <Text style={styles.coinQuantity}>Količina: {coin.data.kolicina}</Text>
-    </View>
-  </View>
-);
 
 interface RegisterProps {
   navigation: NativeStackNavigationProp<any>;
+  dataChange: MyCoin | null;
+
 }
 
-const Trznica = ({ navigation }: RegisterProps) => {
+const Trznica = ({ navigation, dataChange}: RegisterProps) => {
   const [coinData, setCoinData] = useState<MyCoin[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedFilter, setSelectedFilter] = React.useState<string>("");
   const [selectedValue, setSelectedValue] = React.useState<string>("");
 
-  useEffect(() => {
-    const fetchCoinData = async () => {
-      try {
-        const response = await axios.get(`${baseUrl}/pridobiKovanceTrznica`);
-        const documents = response.data.documents;
 
-        const newCoinData: MyCoin[] = documents.map((document: any) => ({
-          id: document.id,
-          data: {
-            ime: document.data.ime,
-            kolicina: document.data.kolicina,
-            opis: document.data.opis,
-            slika: document.data.slika,
-          },
-        }));
-
-        setCoinData(newCoinData);
-        setLoading(false);
-      } catch (error) {
-        console.error(
-          "Napaka pri pridobivanju podatkov o kriptovalutah",
-          error
-        );
-        setLoading(false);
-      }
-    };
-
-    fetchCoinData();
-  }, []);
 
   function handleDodaj() {
     navigation.navigate("DodajTrznica");
@@ -81,9 +45,9 @@ const Trznica = ({ navigation }: RegisterProps) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={handleDodaj} style={styles.registerButton}>
-        <Text style={styles.buttonText}>Dodaj</Text>
+        <Text style={styles.buttonText}>+ Dodaj</Text>
       </TouchableOpacity>
-      <Filter />
+      <Filter dataChange={dataChange}/>
     </View>
   );
 };
@@ -131,16 +95,25 @@ const styles = StyleSheet.create({
     color: "#333",
   },
   registerButton: {
-    backgroundColor: "gold",
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 5,
-    marginTop: 10,
+      // position: "absolute", // Position over everything else
+      // right: 20, // 20 points from the right edge of the screen
+      // bottom: 20, // 20 points from the bottom edge of the screen
+      backgroundColor: "#FFA500", // Orange color
+      paddingVertical: 10,
+      paddingHorizontal: 20,
+      justifyContent: "center",
+      alignItems: "center",
+      borderRadius: 20,
+      elevation: 3, // Add elevation for Android shadow
+      shadowColor: "#000000", // Shadow for iOS
+      shadowOffset: { width: 0, height: 2 }, // Shadow for iOS
+      shadowOpacity: 0.3, // Shadow for iOS
+      shadowRadius: 2, // Shadow for iOS
   },
   buttonText: {
-    color: "black",
-    textAlign: "center",
+    color: "white",
     fontSize: 16,
+    fontWeight: "bold", 
   },
 });
 

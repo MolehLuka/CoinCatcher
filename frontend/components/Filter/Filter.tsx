@@ -15,7 +15,11 @@ interface MyCoin {
   };
 }
 
-export default function Filter() {
+interface FilterProps {
+  dataChange: MyCoin | null
+}
+
+export default function Filter({dataChange}: FilterProps) {
   const [categoryOptions, setCategoryOptions] = React.useState<string[]>([]);
   const [selectedFilter, setSelectedFilter] = React.useState<string>("");
   const [categoryFilters, setCategoryFilters] = React.useState<string[]>([]);
@@ -58,7 +62,7 @@ export default function Filter() {
     };
 
     fetchCoinData();
-  }, []);
+  }, [dataChange]);
 
   React.useEffect(() => {
     axios
@@ -81,6 +85,7 @@ export default function Filter() {
           )
         )
       );
+      console.log(filterValues)
       setCategoryFilters(filterValues);
     }
   }, [selectedFilter, coinData]);
@@ -98,8 +103,8 @@ export default function Filter() {
 
   return (
     <View style={[styles.flex]}>
-      <View style={[]}>
-        <Text>Filter</Text>
+      <View style={[styles.pickerContainer, styles.filterContainer]}>
+        <Text style={[styles.pickerLabel]}>Izberite kategorijo</Text>
         <RNPickerSelect
           placeholder={placeholderCategory}
           items={categoryOptions.map((category) => ({
@@ -111,9 +116,11 @@ export default function Filter() {
             setSelectedValue("");
           }}
           value={selectedFilter}
+          style={pickerSelectStyles}
         />
         {selectedFilter && selectedFilter !== "vsi" && (
-          <View style={[]}>
+          <View style={[styles.pickerContainer]}>
+            <Text style={[styles.pickerLabel]}>Izberite vrednost</Text>
             <RNPickerSelect
               placeholder={placeholderValue}
               items={categoryFilters.map((category) => ({
@@ -124,6 +131,7 @@ export default function Filter() {
                 setSelectedValue(value);
               }}
               value={selectedValue}
+              style={pickerSelectStyles}
             />
           </View>
         )}
@@ -165,5 +173,45 @@ const styles = StyleSheet.create({
   },
   flex: {
     flex: 1,
-  }
+  },
+  filterContainer: {
+    backgroundColor: '#fff',
+    marginTop: 15,
+    padding: 10,
+    borderRadius: 10,
+  },
+  pickerContainer: {
+    marginBottom: 15,
+  },
+  pickerLabel: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 5,
+  },
+});
+
+const pickerSelectStyles = StyleSheet.create({
+  inputIOS: {
+    fontSize: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 10,
+    borderWidth: 1,
+    borderColor: 'gray',
+    borderRadius: 4,
+    color: 'black',
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+  inputAndroid: {
+    fontSize: 16,
+    paddingHorizontal: 10,
+    paddingVertical: 8,
+    borderWidth: 0.5,
+    borderColor: 'gray',
+    borderRadius: 8,
+    color: 'black',
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
 });
