@@ -147,8 +147,9 @@ const upload = multer({ storage: multerStorage });
 
 app.post("/dodajSvojKovanec", upload.single('slika'), async (req: Request , res: Response) => {
   try {
-    const { ime, opis, kolicina } = req.body;
-
+    
+    const { ime, opis, kolicina, telefonskaSt, datum, imepriimek, cena } = req.body;
+/*
     if (!req.file) {
       console.log(req.file)
       return res.status(400).json({ error: 'No image file provided' });
@@ -169,13 +170,18 @@ app.post("/dodajSvojKovanec", upload.single('slika'), async (req: Request , res:
       action: 'read',
       expires: '01-01-2100',
     });
-
+*/
 
     const kovanecRef = await db.collection('kovanecSeznam').add({
       ime,
       opis,
       kolicina,
-      slika: imageUrl[0],
+     // slika: imageUrl[0],
+     slika: 'https://as2.ftcdn.net/v2/jpg/03/16/24/49/1000_F_316244961_4Kch7qlXUf8accn4wXUK4vA4ZfPMmpPh.jpg',
+      telefonskaSt,
+      datum,
+      imepriimek,
+      cena
     });
 
     res.status(201).json({ message: 'Kovanec uspešno dodan', id: kovanecRef.id });

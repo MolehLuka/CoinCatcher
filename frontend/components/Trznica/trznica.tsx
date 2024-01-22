@@ -20,6 +20,10 @@ export interface MyCoin {
     kolicina: string;
     opis: string;
     slika: string;
+    telefonskaSt: number,
+    datum: string,
+    imepriimek: string,
+    cena: number
   };
 }
 
@@ -47,7 +51,7 @@ const Trznica = ({ navigation, dataChange}: RegisterProps) => {
       <TouchableOpacity onPress={handleDodaj} style={styles.registerButton}>
         <Text style={styles.buttonText}>+ Dodaj</Text>
       </TouchableOpacity>
-      <Filter dataChange={dataChange}/>
+      <Filter dataChange={dataChange} navigation={navigation}/>
     </View>
   );
 };

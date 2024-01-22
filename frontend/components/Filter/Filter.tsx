@@ -1,22 +1,18 @@
 import axios from "axios";
 import * as React from "react";
-import { View, Text, StyleSheet, ScrollView, FlatList } from "react-native";
+import { View, Text, StyleSheet, ScrollView, FlatList, TouchableOpacity } from "react-native";
 import RNPickerSelect from "react-native-picker-select";
 import CoinItem from "./CoinItem";
 import { baseUrl } from "../../global";
+import CoinModal from "./CoinModal";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { MyCoin } from "../Trznica/trznica";
 
-interface MyCoin {
-  id: string;
-  data: {
-    ime: string;
-    kolicina: string;
-    opis: string;
-    slika: string;
-  };
-}
+
 
 interface FilterProps {
-  dataChange: MyCoin | null
+  dataChange: MyCoin | null,
+  navigation: NativeStackNavigationProp<any>;
 }
 
 export default function Filter({dataChange}: FilterProps) {
@@ -26,6 +22,7 @@ export default function Filter({dataChange}: FilterProps) {
   const [selectedValue, setSelectedValue] = React.useState<string>("");
   const [coinData, setCoinData] = React.useState<MyCoin[]>([]);
   const [filteredCoins, setFilteredCoins] = React.useState<MyCoin[]>(coinData);
+  const [selectedCoin, setSelectedCoin] = React.useState<MyCoin|null>(null);
 
   const placeholderCategory = {
     label: "Select a category...",
@@ -35,6 +32,10 @@ export default function Filter({dataChange}: FilterProps) {
     label: "Select a value...",
     value: null,
   };
+
+  if(coinData == null){
+    return;
+  }
 
   React.useEffect(() => {
     const fetchCoinData = async () => {
@@ -48,7 +49,11 @@ export default function Filter({dataChange}: FilterProps) {
             ime: document.data.ime,
             kolicina: document.data.kolicina,
             opis: document.data.opis,
-            slika: document.data.slika,
+            slika: 'https://as2.ftcdn.net/v2/jpg/03/16/24/49/1000_F_316244961_4Kch7qlXUf8accn4wXUK4vA4ZfPMmpPh.jpg',
+            telefonskaSt: document.data.telefonskaSt,
+            datum: document.data.datum,
+            imepriimek: document.data.imepriimek,
+            cena: document.data.cena
           },
         }));
 
@@ -101,6 +106,14 @@ export default function Filter({dataChange}: FilterProps) {
     }
   }, [selectedValue, selectedFilter, coinData]);
 
+  const openModal = (coin: MyCoin) => {
+    setSelectedCoin(coin);
+  };
+
+  const closeModal = () => {
+    setSelectedCoin(null);
+  };
+
   return (
     <View style={[styles.flex]}>
       <View style={[styles.pickerContainer, styles.filterContainer]}>
@@ -137,19 +150,36 @@ export default function Filter({dataChange}: FilterProps) {
         )}
       </View>
       {selectedFilter === "vsi" && (
-                  <FlatList
-                  data={coinData}
-                  keyExtractor={(item) => item.id}
-                  renderItem={({ item }) => <CoinItem coin={item} />}
-                />
+        
+        <FlatList
+        data={coinData}
+        keyExtractor={(item) => item.id}
+        renderItem={({ item }) => (
+          <TouchableOpacity
+          onPress={() => openModal(item)}>
+            <CoinItem coin={item} />
+          </TouchableOpacity>
+        )}
+      />
       )}
       {selectedValue && (
           <FlatList
-            data={filteredCoins}
-            keyExtractor={(item) => item.id}
-            renderItem={({ item }) => <CoinItem coin={item} />}
-          />
+          data={filteredCoins}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <TouchableOpacity
+            onPress={() => openModal(item)}>
+              <CoinItem coin={item} />
+            </TouchableOpacity>
+          )}
+        />
         )}
+
+<CoinModal
+        visible={selectedCoin !== null}
+        onClose={closeModal}
+        coin={selectedCoin}
+      />
     </View>
   );
 }
