@@ -99,6 +99,7 @@ const AppNavigator = () => {
   const [loading, setLoading] = useState(true);
   const [dataChange, setDataChange] = useState<MyCoin | null>(null);
 
+  
   useEffect(() => {
     const preveriUid = async () => {
       try {
@@ -130,7 +131,7 @@ const AppNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName={initialRouteName}>
-        <Stack.Screen name="CoinCatcher">
+        <Stack.Screen name="CoinCatcher" options={{headerTitleAlign: "left"}}>
           {(props) => <Navigator {...props} dataChange={dataChange} />}
         </Stack.Screen>
         <Stack.Screen

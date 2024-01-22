@@ -47,7 +47,7 @@ function Login({ navigation }: LoginProps) {
       };
 
       saveData();
-      navigation.navigate("App");
+      navigation.navigate("CoinCatcher");
       console.log("x");
       console.log("Odgovor od backend-a:", response.data);
     } catch (error) {
