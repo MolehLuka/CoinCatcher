@@ -1,5 +1,5 @@
 import React, { useRef } from "react";
-import { View, Text, StyleSheet } from "react-native";
+import { View, Text, StyleSheet, ScrollView } from "react-native";
 import { Image, TouchableOpacity } from "react-native";
 import Coin from "../Coin/Coin";
 import CurrencyConverter from "../Coin/CurrencyConverter/CurrencyConverter";
@@ -11,9 +11,17 @@ import DropdownAlert, {
   DropdownAlertData,
   DropdownAlertType,
 } from "react-native-dropdownalert";
+import {
+  PulseIndicator,
+} from "react-native-indicators";
+
 
 const ScannedCoinInfo = ({ route }: { route: any }) => {
   const { coinData } = route.params;
+
+  const [frontImageLoading, setFrontImageLoading] = useState(true);
+  const [backImageLoading, setBackImageLoading] = useState(true);
+
   //const serverBaseUrl = 'http://192.168.1.107:3000';
 
   const [uid, setUid] = useState<string | null>("");
@@ -75,13 +83,17 @@ const ScannedCoinInfo = ({ route }: { route: any }) => {
   return (
     <View style={styles.container}>
       <View style={styles.imageContainer}>
+        {frontImageLoading && <PulseIndicator color="#FFA500" size={100} style={styles.activityIndicator} />}
         <Image
           source={{ uri: coinData.images.front }}
           style={styles.coinImage}
+          onLoad={() => setFrontImageLoading(false)}
         />
+        {backImageLoading && <PulseIndicator color="#FFA500" size={100} style={styles.activityIndicator} />}
         <Image
           source={{ uri: coinData.images.back }}
           style={styles.coinImage}
+          onLoad={() => setBackImageLoading(false)}
         />
       </View>
       <Text
@@ -103,6 +115,8 @@ const ScannedCoinInfo = ({ route }: { route: any }) => {
       <View style={[]}>
         <CurrencyConverter coin={coinData} />
       </View>
+
+      <DropdownAlert alert={func => (alert = func)} />
     </View>
   );
 };
@@ -167,6 +181,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: 10,
+  },
+  activityIndicator: {
+    position: "absolute",
+    alignSelf: "center",
+    zIndex: 1,
   },
 });
 
