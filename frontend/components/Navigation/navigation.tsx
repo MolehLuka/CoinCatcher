@@ -53,7 +53,6 @@ function Navigator({ dataChange }: NavigatorProps) {
             ),
           }}
         />
-        <Tab.Screen name="Collection" component={CollectionScreen} />
         <Tab.Screen name='Trznica' options={{ headerShown: false }}>
   {(props) => <Trznica dataChange={dataChange} {...props} />}
 </Tab.Screen>
