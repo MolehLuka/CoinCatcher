@@ -197,6 +197,22 @@ app.get("/pridobiKovanceTrznica", async (req: Request, res: Response) => {
 });
 
 
+app.get('/random-coin', async (req, res) => {
+  try {
+    const kovanciData = await db.collection('kovanciData').get();
+    const coins: any[] = [];
+    kovanciData.forEach((doc) => {
+      coins.push({ id: doc.id, ...doc.data() });
+    });
+
+    // Select a random coin
+    const randomCoin = coins[Math.floor(Math.random() * coins.length)];
+    res.json(randomCoin);
+  } catch (err) {
+    res.status(500).send('Server error accessing Firestore');
+  }
+});
+
 
 app.post("/login", async (req:Request, res:Response) => {
 

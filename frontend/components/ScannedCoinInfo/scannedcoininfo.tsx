@@ -24,6 +24,8 @@ const ScannedCoinInfo = ({ route }: { route: any }) => {
         style={styles.coinName}
       >{`${coinData.issuer} ${coinData.value}`}</Text>
 
+      <Text style={styles.detailText}>To check detailed information about the coin, add it to a collection!</Text>
+
       <CurrencyConverter coin={coinData} />
 
       <TouchableOpacity style={styles.addToCollectionButton}>
@@ -39,6 +41,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
+    justifyContent: "space-between",
     backgroundColor: "white",
   },
   imageContainer: {
@@ -77,6 +80,13 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 16,
     fontWeight: "bold",
+  },
+  detailText: {
+    fontSize: 14,
+    color: "gray",
+    fontWeight: "bold",
+    textAlign: "center",
+    marginVertical: 20, // Adjust as needed
   },
   // Add more styles as needed
 });
