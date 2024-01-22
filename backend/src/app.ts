@@ -85,6 +85,10 @@ app.post("/register", async (req: Request, res: Response) => {
       telefonskaSt: telefonskaSt
     });
 
+    await db.collection('userCoinCollections').doc(userCredential.uid).set({
+      coins: []
+    });
+
     res
       .status(200)
       .json({ message: "Registracija uspešna", user: userCredential });

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, StatusBar, StyleSheet } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, RouteProp } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import CollectionScreen from "../Collection/collection";
 import ScannedCoinInfo from "../ScannedCoinInfo/scannedcoininfo";
@@ -13,12 +13,17 @@ import Trznica, { MyCoin } from "../Trznica/trznica";
 import DodajKovanecScreen from "../DodajTrznica/dodajtrznica";
 import { CameraScreen } from "../CameraScreen/camera";
 import darkColors from "react-native-elements/dist/config/colorsDark";
-import CoinModal from "../Filter/CoinModal";
+import { Ionicons } from "@expo/vector-icons";
+import { Fontisto } from "@expo/vector-icons";
+import ClickedCoinInfo from '../ClickedCoinInfo/ClickedCoinInfo';
+import { ICoin } from '../../moduls/ICoin';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 const CameraStack = createStackNavigator();
+const CollectionStack = createStackNavigator();
+
 
 function CameraStackNavigator() {
   return (
@@ -37,24 +42,67 @@ function CameraStackNavigator() {
   );
 }
 
+function CollectionStackNavigator() {
+  return (
+    <CollectionStack.Navigator>
+      <CollectionStack.Screen name="CollectionScreen" component={CollectionScreen} options={{headerShown: false}}/>
+      <CollectionStack.Screen name="ClickedCoinInfo" component={ClickedCoinInfo} options={{headerShown: false}}/>
+    </CollectionStack.Navigator>
+  );
+}
+
+
 interface NavigatorProps {
   dataChange: MyCoin | null;
 }
 
+
 function Navigator({ dataChange }: NavigatorProps) {
   return (
-    <Tab.Navigator>
-      <Tab.Screen name="Collection" component={CollectionScreen} />
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
+          let iconStyle = {};
+
+          if (route.name === "Camera") {
+            iconName = "camera"; // Change the icon name based on your preference
+            color = focused ? "#FFA500" : color; // Change the color when focused
+            size = 50;
+          }
+          if (route.name === "Collection") {
+            iconName = "bookmarks"; // Change the icon name based on your preference
+            color = focused ? "#FFA500" : color; // Change the color when focused
+            iconStyle = { marginTop: 10 };
+          }
+          if (route.name === "Trznica") {
+            iconName = "cart"; // Change the icon name based on your preference
+            color = focused ? "#FFA500" : color; // Change the color when focused
+            size = 35
+            iconStyle = { marginTop: 5 };
+          }
+          // ... handle other icons
+
+          return <Ionicons name={iconName as any} size={size} color={color} style={iconStyle}/>;
+        }, // This will hide the label
+        tabBarActiveTintColor: "#FFA500", // Color of the icon when the tab is active
+        tabBarInactiveTintColor: "gray", // Color of the icon when the tab is inactive
+      })}
+    >
+      <Tab.Screen
+        name="Collection"
+        component={CollectionStackNavigator}
+        options={{ headerShown: false, tabBarLabelStyle: { fontWeight: "bold" } }}
+      />
       <Tab.Screen
         name="Camera"
         component={CameraStackNavigator}
         options={{
-          tabBarIcon: ({ color, size }) => (
-            <Icon name="camera" color={color} size={size} />
-          ),
+          headerShown: false,
+          tabBarLabel: () => null,
         }}
       />
-      <Tab.Screen name="Trznica" options={{ headerShown: false }}>
+      <Tab.Screen name="Trznica" options={{ headerShown: false, tabBarLabelStyle: { fontWeight: "bold" }}}>
         {(props) => <Trznica dataChange={dataChange} {...props} />}
       </Tab.Screen>
     </Tab.Navigator>
@@ -66,6 +114,7 @@ const AppNavigator = () => {
   const [loading, setLoading] = useState(true);
   const [dataChange, setDataChange] = useState<MyCoin | null>(null);
 
+  
   useEffect(() => {
     const preveriUid = async () => {
       try {
@@ -97,7 +146,7 @@ const AppNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName={initialRouteName}>
-        <Stack.Screen name="CoinCatcher">
+        <Stack.Screen name="CoinCatcher" options={{headerTitleAlign: "left"}}>
           {(props) => <Navigator {...props} dataChange={dataChange} />}
         </Stack.Screen>
         <Stack.Screen
@@ -116,13 +165,6 @@ const AppNavigator = () => {
               {...props}
               handleAddToDatabase={handleAddToDatabase}
             />
-          )}
-        </Stack.Screen>
-        <Stack.Screen name="Podrobnosti" options={{ headerShown: false }}>
-          {(props) => (
-            <CoinModal
-            visible={false} {...props}
-            coin={null}            />
           )}
         </Stack.Screen>
       </Stack.Navigator>

@@ -1,27 +1,53 @@
 // Frontend in React Native
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, Image, StyleSheet } from 'react-native';
+import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { baseUrl } from '../../global';
 import {
   PulseIndicator,
 } from "react-native-indicators";
+import { useNavigation } from '@react-navigation/native';
+import { ICoin } from '../../moduls/ICoin';
+import { StackNavigationProp } from '@react-navigation/stack';
 
-const CollectionScreen = () => {
+type RootStackParamList = {
+  CollectionScreen: undefined;
+  ClickedCoinInfo: { coin: ICoin };
+};
+
+type ClickedCoinInfoRouteProp = StackNavigationProp<RootStackParamList, 'ClickedCoinInfo'>;
+
+type Props = {
+  navigation: ClickedCoinInfoRouteProp;
+};
+
+export const CollectionScreen: React.FC<Props> = ({navigation }) => {
   const [coins, setCoins] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [empty, setEmpty] = useState(false);
+
+  const handleCoinClick = (coin: ICoin) => {
+    navigation.navigate('ClickedCoinInfo', { coin });
+  };
 
   useEffect(() => {
     const fetchCollection = async (uid: string) => {
       try {
-        const response = await axios.get(`${baseUrl}/pridobiKovanceCollection`, {
-          params: { userId: uid },
-        });
+        const response = await axios.get(
+          `${baseUrl}/pridobiKovanceCollection`,
+          {
+            params: { userId: uid },
+          }
+        );
+
+        if (response.data.length === 0) {
+          setEmpty(true);
+        }
 
         setCoins(response.data);
       } catch (error) {
-        console.error('Failed to fetch collection:', error);
+        console.error("Failed to fetch collection:", error);
       } finally {
         setLoading(false);
       }
@@ -33,7 +59,7 @@ const CollectionScreen = () => {
       if (uid) {
         fetchCollection(uid);
       } else {
-        console.error('User ID not found');
+        console.error("User ID not found");
         setLoading(false);
       }
     };
@@ -51,16 +77,21 @@ const CollectionScreen = () => {
 
   return (
     <View style={styles.container}>
+      {empty && (
+        <Text style={{ fontSize: 15, textAlign: "center", marginTop: 20, fontWeight: "bold" }}>
+          Your collection is empty. Go to the camera to scan your first coin!
+        </Text>
+      )}
       <FlatList
         data={coins}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
+          <TouchableOpacity onPress={() => handleCoinClick(item)}>
           <View style={styles.coinItem}>
-            {/* Render coin images and details */}
             <Image source={{ uri: item.images.front }} style={styles.coinImage} />
             <Text style={styles.coinText}>{`${item.issuer} ${item.value}`}</Text>
-            {/* ... other coin details ... */}
           </View>
+          </TouchableOpacity>
         )}
       />
     </View>
@@ -70,12 +101,12 @@ const CollectionScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: "white",
   },
   coinItem: {
-    flexDirection: 'row',
+    flexDirection: "row",
     padding: 10,
-    alignItems: 'center',
+    alignItems: "center",
   },
   coinImage: {
     width: 50,
