@@ -11,6 +11,9 @@ import DropdownAlert, {
   DropdownAlertData,
   DropdownAlertType,
 } from "react-native-dropdownalert";
+import {
+  PulseIndicator,
+} from "react-native-indicators";
 
 interface Coin {
   composition: string;
@@ -35,16 +38,23 @@ const ClickedCoinInfo = ({route}: {route: any}) => {
     const { coin } = route.params;
   const [coinData, setCoinData] = useState<Coin>(coin);
 
+  const [frontImageLoading, setFrontImageLoading] = useState(true);
+  const [backImageLoading, setBackImageLoading] = useState(true);
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.imageContainer}>
+        { frontImageLoading && <PulseIndicator color="#FFA500" size={100} style={styles.activityIndicator} /> }
         <Image
           source={{ uri: coinData.images.front }}
           style={styles.coinImage}
+          onLoad={() => setFrontImageLoading(false)}
         />
+        { backImageLoading && <PulseIndicator color="#FFA500" size={100} style={styles.activityIndicator}/> }
         <Image
           source={{ uri: coinData.images.back }}
           style={styles.coinImage}
+          onLoad={() => setBackImageLoading(false)}
         />
       </View>
 
@@ -63,12 +73,12 @@ const ClickedCoinInfo = ({route}: {route: any}) => {
 
       <View style={styles.infoContainer}>
         <Text style={styles.infoTitle}>Front</Text>
-        <Text style={styles.infoText}>{coinData.obverse}</Text>
+        <Text style={styles.infoText}>{coinData.reverse}</Text>
       </View>
 
       <View style={styles.infoContainer}>
         <Text style={styles.infoTitle}>Back</Text>
-        <Text style={styles.infoText}>{coinData.reverse}</Text>
+        <Text style={styles.infoText}>{coinData.obverse}</Text>
       </View>
 
       <View style={styles.infoContainer}>
@@ -160,6 +170,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     padding: 15,
     marginVertical: 10,
+    marginBottom: 30
   },
   infoTitle: {
     fontSize: 16,
@@ -180,6 +191,11 @@ const styles = StyleSheet.create({
   },
   col: {
     flex: 1,
+  },
+  activityIndicator: {
+    position: "absolute",
+    alignSelf: "center",
+    zIndex: 1,
   },
 });
 
