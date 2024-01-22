@@ -1,12 +1,76 @@
-import React from "react";
+import React, { useRef } from "react";
 import { View, Text, StyleSheet } from "react-native";
 import { Image, TouchableOpacity } from "react-native";
 import Coin from "../Coin/Coin";
 import CurrencyConverter from "../Coin/CurrencyConverter/CurrencyConverter";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from "axios";
+import { baseUrl } from "../../global";
+import { useState, useEffect } from "react";
+import DropdownAlert, {
+  DropdownAlertData,
+  DropdownAlertType,
+} from "react-native-dropdownalert";
 
 const ScannedCoinInfo = ({ route }: { route: any }) => {
   const { coinData } = route.params;
   //const serverBaseUrl = 'http://192.168.1.107:3000';
+
+  const [uid, setUid] = useState<string | null>("");
+
+  let alert = (_data: DropdownAlertData) =>
+    new Promise<DropdownAlertData>((res) => res);
+
+  useEffect(() => {
+    const fetchUid = async () => {
+      const value = await AsyncStorage.getItem("id");
+      setUid(value);
+      console.log(value);
+    };
+
+    fetchUid();
+  }, []);
+
+  const addToCollection = async () => {
+    // console.log("userId: ", uid);
+
+    try {
+      const response = await axios.post(`${baseUrl}/dodajKovanecVCollection`, {
+        userId: uid,
+        coinData: coinData,
+      });
+
+      if (response.status === 200) {
+        const alertData = await alert({
+          type: DropdownAlertType.Info,
+          title: "Success",
+          message: "Coin added to collection.",
+        });
+      }
+    } catch (error) {
+      if ((error as any).response) {
+        if ((error as any).response.status === 409) {
+          const alertData = await alert({
+            type: DropdownAlertType.Error,
+            title: "Error",
+            message: "Coin already in collection!",
+          });
+        } else {
+          const alertData = await alert({
+            type: DropdownAlertType.Error,
+            title: "Error",
+            message: "Error calling backend.",
+          });
+        }
+      } else {
+        const alertData = await alert({
+          type: DropdownAlertType.Error,
+          title: "Error",
+          message: "Error calling backend.",
+        });
+      }
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -24,15 +88,21 @@ const ScannedCoinInfo = ({ route }: { route: any }) => {
         style={styles.coinName}
       >{`${coinData.issuer} ${coinData.value}`}</Text>
 
-      <Text style={styles.detailText}>To check detailed information about the coin, add it to a collection!</Text>
+      <Text style={styles.detailText}>
+        To check detailed information about the coin, add it to a collection!
+      </Text>
 
       <CurrencyConverter coin={coinData} />
 
-      <TouchableOpacity style={styles.addToCollectionButton}>
+      <TouchableOpacity
+        style={styles.addToCollectionButton}
+        onPress={addToCollection}
+      >
         <Text style={styles.addToCollectionButtonText}>
           + Add to Collection
         </Text>
       </TouchableOpacity>
+      <DropdownAlert alert={(func) => (alert = func)} />
     </View>
   );
 };

@@ -214,6 +214,61 @@ app.get('/random-coin', async (req, res) => {
 });
 
 
+app.post('/dodajKovanecVCollection', async (req: Request, res: Response) => {
+  try {
+    const userId = req.body.userId;
+    const coinData = req.body.coinData;
+
+    const userCollectionRef = db.collection('userCoinCollections').doc(userId);
+
+    const doc = await userCollectionRef.get();
+
+    if (!doc.exists) {
+      // dokumet ne obstaja, ustvari ga
+      await userCollectionRef.set({ coins: [coinData] });
+      res.status(200).json({ message: 'Kovanec je bil dodan v collection' });
+    } else {
+      // Check if the coin already exists in the collection
+      const userCollection = doc.data();
+      if (userCollection && userCollection.coins.some((coin: { id: any; }) => coin.id === coinData.id)) {
+        // kovanec ze obstaja v collectionu
+        res.status(409).json({ message: 'Kovanec je že v collectionu' });
+      } else {
+        // kovanec ne obstaja v collectionu, dodaj ga
+        await userCollectionRef.update({
+          coins: admin.firestore.FieldValue.arrayUnion(coinData)
+        });
+        res.status(200).json({ message: 'Kovanec je bil dodan v collection' });
+      }
+    }
+  } catch (error) {
+    console.error('Napaka pri dodajanju kovanca v collection:', error);
+    res.status(500).json({ error: 'Napaka pri dodajanju kovanca v collection' });
+  }
+});
+
+app.get('/pridobiKovanceCollection', async (req: Request, res: Response) => {
+  const userId = req.query.userId;
+
+  if (!userId) {
+    res.status(400).json({ error: 'User ID ni bil podan' });
+  }
+
+  try {
+    const userCollectionRef = db.collection('userCoinCollections').doc(userId as string);
+    const doc = await userCollectionRef.get();
+
+    if (!doc.exists) {
+      res.status(404).json({ error: 'Collection ni bil najden' });
+    }
+
+    return res.status(200).json(doc.data()?.coins ?? []);
+  } catch (error) {
+    console.error('Error fetching user collection:', error);
+    res.status(500).json({ error: 'Internal server error' });
+  }
+});
+
 app.post("/login", async (req:Request, res:Response) => {
 
   const {email, password} = req.body;

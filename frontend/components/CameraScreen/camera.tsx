@@ -26,8 +26,8 @@ import {
 
 import { StackNavigationProp } from "@react-navigation/stack";
 import { baseUrl } from "../../global";
-
 import { useFocusEffect } from '@react-navigation/native';
+import axios from "axios";
 
 type RootStackParamList = {
   ScannedCoinInfo: { coinData: any };
