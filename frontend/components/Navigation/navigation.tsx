@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, StatusBar, StyleSheet } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, RouteProp } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import CollectionScreen from "../Collection/collection";
 import ScannedCoinInfo from "../ScannedCoinInfo/scannedcoininfo";
@@ -15,11 +15,15 @@ import { CameraScreen } from "../CameraScreen/camera";
 import darkColors from "react-native-elements/dist/config/colorsDark";
 import { Ionicons } from "@expo/vector-icons";
 import { Fontisto } from "@expo/vector-icons";
+import ClickedCoinInfo from '../ClickedCoinInfo/ClickedCoinInfo';
+import { ICoin } from '../../moduls/ICoin';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 const CameraStack = createStackNavigator();
+const CollectionStack = createStackNavigator();
+
 
 function CameraStackNavigator() {
   return (
@@ -38,9 +42,20 @@ function CameraStackNavigator() {
   );
 }
 
+function CollectionStackNavigator() {
+  return (
+    <CollectionStack.Navigator>
+      <CollectionStack.Screen name="CollectionScreen" component={CollectionScreen} options={{headerShown: false}}/>
+      <CollectionStack.Screen name="ClickedCoinInfo" component={ClickedCoinInfo} options={{headerShown: false}}/>
+    </CollectionStack.Navigator>
+  );
+}
+
+
 interface NavigatorProps {
   dataChange: MyCoin | null;
 }
+
 
 function Navigator({ dataChange }: NavigatorProps) {
   return (
@@ -76,7 +91,7 @@ function Navigator({ dataChange }: NavigatorProps) {
     >
       <Tab.Screen
         name="Collection"
-        component={CollectionScreen}
+        component={CollectionStackNavigator}
         options={{ headerShown: false, tabBarLabelStyle: { fontWeight: "bold" } }}
       />
       <Tab.Screen

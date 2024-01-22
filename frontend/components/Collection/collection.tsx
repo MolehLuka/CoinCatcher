@@ -1,15 +1,35 @@
 // Frontend in React Native
-import React, { useState, useEffect } from "react";
-import { View, Text, FlatList, Image, StyleSheet } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "axios";
-import { baseUrl } from "../../global";
-import { PulseIndicator } from "react-native-indicators";
+import React, { useState, useEffect } from 'react';
+import { View, Text, FlatList, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+import { baseUrl } from '../../global';
+import {
+  PulseIndicator,
+} from "react-native-indicators";
+import { useNavigation } from '@react-navigation/native';
+import { ICoin } from '../../moduls/ICoin';
+import { StackNavigationProp } from '@react-navigation/stack';
 
-const CollectionScreen = () => {
+type RootStackParamList = {
+  CollectionScreen: undefined;
+  ClickedCoinInfo: { coin: ICoin };
+};
+
+type ClickedCoinInfoRouteProp = StackNavigationProp<RootStackParamList, 'ClickedCoinInfo'>;
+
+type Props = {
+  navigation: ClickedCoinInfoRouteProp;
+};
+
+export const CollectionScreen: React.FC<Props> = ({navigation }) => {
   const [coins, setCoins] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [empty, setEmpty] = useState(false);
+
+  const handleCoinClick = (coin: ICoin) => {
+    navigation.navigate('ClickedCoinInfo', { coin });
+  };
 
   useEffect(() => {
     const fetchCollection = async (uid: string) => {
@@ -66,17 +86,12 @@ const CollectionScreen = () => {
         data={coins}
         keyExtractor={(item) => item.id.toString()}
         renderItem={({ item }) => (
+          <TouchableOpacity onPress={() => handleCoinClick(item)}>
           <View style={styles.coinItem}>
-            {/* Render coin images and details */}
-            <Image
-              source={{ uri: item.images.front }}
-              style={styles.coinImage}
-            />
-            <Text
-              style={styles.coinText}
-            >{`${item.issuer} ${item.value}`}</Text>
-            {/* ... other coin details ... */}
+            <Image source={{ uri: item.images.front }} style={styles.coinImage} />
+            <Text style={styles.coinText}>{`${item.issuer} ${item.value}`}</Text>
           </View>
+          </TouchableOpacity>
         )}
       />
     </View>
