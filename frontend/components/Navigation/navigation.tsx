@@ -9,14 +9,18 @@ import Login from '../Login/login';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Register from '../Register/register';
 import Icon from 'react-native-elements/dist/icons/Icon';
-import Trznica from '../Trznica/trznica';
+import Trznica, { MyCoin } from '../Trznica/trznica';
 import DodajKovanecScreen from '../DodajTrznica/dodajtrznica';
 import { CameraScreen } from '../CameraScreen/camera';
+import darkColors from 'react-native-elements/dist/config/colorsDark';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 const CameraStack = createStackNavigator();
+
+
+
 
 function CameraStackNavigator() {
   return (
@@ -27,9 +31,15 @@ function CameraStackNavigator() {
   );
 }
 
+interface NavigatorProps {
+  dataChange : MyCoin | null;
+}
 
 
-function Navigator() {
+
+
+function Navigator({ dataChange }: NavigatorProps) {
+
   return (
 
     <Tab.Navigator>
@@ -43,16 +53,22 @@ function Navigator() {
             ),
           }}
         />
-        <Tab.Screen name="Trznica" component={Trznica} />
+        <Tab.Screen name="Collection" component={CollectionScreen} />
+        <Tab.Screen name='Trznica' options={{ headerShown: false }}>
+  {(props) => <Trznica dataChange={dataChange} {...props} />}
+</Tab.Screen>
     </Tab.Navigator>
     
 
   );
 }
 
+
 const AppNavigator = () => {
   const [initialRouteName, setInitialRouteName] = useState('');
   const [loading, setLoading] = useState(true);
+  const [dataChange, setDataChange] = useState<MyCoin |null>(null);
+
 
   useEffect(() => {
     const preveriUid = async () => {
@@ -74,6 +90,14 @@ const AppNavigator = () => {
     preveriUid();
   }, []);
 
+
+  const handleAddToDatabase = (coin: MyCoin) => {
+
+    setDataChange(coin);
+
+  };
+
+
   if (loading) {
     return null;
   }
@@ -81,10 +105,14 @@ const AppNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName={initialRouteName}>
-        <Stack.Screen name="App" component={Navigator} options={{ headerShown: false }} />
+      <Stack.Screen name="App">
+          {(props) => <Navigator {...props} dataChange={dataChange}/>}
+        </Stack.Screen>
         <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
         <Stack.Screen name="Register" component={Register} options={{ headerShown: false }} />
-        <Stack.Screen name="DodajTrznica" component={DodajKovanecScreen} options={{ headerShown: false }} />
+<Stack.Screen name='DodajTrznica' options={{ headerShown: false }}>
+  {(props) => <DodajKovanecScreen {...props} handleAddToDatabase={handleAddToDatabase} />}
+</Stack.Screen>
       </Stack.Navigator>
     </NavigationContainer>
   );

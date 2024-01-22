@@ -106,7 +106,6 @@ function Register({ navigation }: RegisterProps) {
         placeholder="Telefonska številka"
         onChangeText={setTelefonskaSt}
         value={telefonskaSt}
-        secureTextEntry
         autoCapitalize="none"
         autoCorrect={false}
       />
@@ -132,7 +131,7 @@ function Register({ navigation }: RegisterProps) {
         onPress={handleRegister}
         style={styles.registerButton}
       >
-        <Text style={styles.buttonText}>Register</Text>
+        <Text style={styles.buttonText}>Registracija</Text>
       </TouchableOpacity>
 
       <TouchableOpacity onPress={navigateToLogin}>

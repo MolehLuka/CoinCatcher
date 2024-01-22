@@ -15,7 +15,11 @@ interface MyCoin {
   };
 }
 
-export default function Filter() {
+interface FilterProps {
+  dataChange: MyCoin | null
+}
+
+export default function Filter({dataChange}: FilterProps) {
   const [categoryOptions, setCategoryOptions] = React.useState<string[]>([]);
   const [selectedFilter, setSelectedFilter] = React.useState<string>("");
   const [categoryFilters, setCategoryFilters] = React.useState<string[]>([]);
@@ -58,7 +62,7 @@ export default function Filter() {
     };
 
     fetchCoinData();
-  }, []);
+  }, [dataChange]);
 
   React.useEffect(() => {
     axios

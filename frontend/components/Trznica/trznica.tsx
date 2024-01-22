@@ -13,7 +13,7 @@ import { baseUrl } from "../../global";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import Filter from "../Filter/Filter";
 
-interface MyCoin {
+export interface MyCoin {
   id: string;
   data: {
     ime: string;
@@ -23,56 +23,20 @@ interface MyCoin {
   };
 }
 
-const CoinItem: React.FC<{ coin: MyCoin }> = ({ coin }) => (
-  <View style={styles.coinContainer}>
-    <Image source={{ uri: coin.data.slika }} style={styles.coinImage} />
-    <View style={styles.coinInfo}>
-      <Text style={styles.coinName}>{coin.data.ime}</Text>
-      <Text style={styles.coinDescription}>{coin.data.opis}</Text>
-      <Text style={styles.coinQuantity}>Količina: {coin.data.kolicina}</Text>
-    </View>
-  </View>
-);
 
 interface RegisterProps {
   navigation: NativeStackNavigationProp<any>;
+  dataChange: MyCoin | null;
+
 }
 
-const Trznica = ({ navigation }: RegisterProps) => {
+const Trznica = ({ navigation, dataChange}: RegisterProps) => {
   const [coinData, setCoinData] = useState<MyCoin[]>([]);
   const [loading, setLoading] = useState(true);
   const [selectedFilter, setSelectedFilter] = React.useState<string>("");
   const [selectedValue, setSelectedValue] = React.useState<string>("");
 
-  useEffect(() => {
-    const fetchCoinData = async () => {
-      try {
-        const response = await axios.get(`${baseUrl}/pridobiKovanceTrznica`);
-        const documents = response.data.documents;
 
-        const newCoinData: MyCoin[] = documents.map((document: any) => ({
-          id: document.id,
-          data: {
-            ime: document.data.ime,
-            kolicina: document.data.kolicina,
-            opis: document.data.opis,
-            slika: document.data.slika,
-          },
-        }));
-
-        setCoinData(newCoinData);
-        setLoading(false);
-      } catch (error) {
-        console.error(
-          "Napaka pri pridobivanju podatkov o kriptovalutah",
-          error
-        );
-        setLoading(false);
-      }
-    };
-
-    fetchCoinData();
-  }, []);
 
   function handleDodaj() {
     navigation.navigate("DodajTrznica");
@@ -83,7 +47,7 @@ const Trznica = ({ navigation }: RegisterProps) => {
       <TouchableOpacity onPress={handleDodaj} style={styles.registerButton}>
         <Text style={styles.buttonText}>+ Dodaj</Text>
       </TouchableOpacity>
-      <Filter />
+      <Filter dataChange={dataChange}/>
     </View>
   );
 };
