@@ -1,8 +1,17 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, Image, Button, TouchableOpacity } from 'react-native';
-import { baseUrl } from '../../global';
-import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  FlatList,
+  Image,
+  Button,
+  TouchableOpacity,
+} from "react-native";
+import { baseUrl } from "../../global";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import Filter from "../Filter/Filter";
 
 interface MyCoin {
   id: string;
@@ -13,7 +22,6 @@ interface MyCoin {
     slika: string;
   };
 }
-
 
 const CoinItem: React.FC<{ coin: MyCoin }> = ({ coin }) => (
   <View style={styles.coinContainer}>
@@ -30,10 +38,11 @@ interface RegisterProps {
   navigation: NativeStackNavigationProp<any>;
 }
 
-
 const Trznica = ({ navigation }: RegisterProps) => {
   const [coinData, setCoinData] = useState<MyCoin[]>([]);
   const [loading, setLoading] = useState(true);
+  const [selectedFilter, setSelectedFilter] = React.useState<string>("");
+  const [selectedValue, setSelectedValue] = React.useState<string>("");
 
   useEffect(() => {
     const fetchCoinData = async () => {
@@ -41,7 +50,6 @@ const Trznica = ({ navigation }: RegisterProps) => {
         const response = await axios.get(`${baseUrl}/pridobiKovanceTrznica`);
         const documents = response.data.documents;
 
-     
         const newCoinData: MyCoin[] = documents.map((document: any) => ({
           id: document.id,
           data: {
@@ -52,11 +60,13 @@ const Trznica = ({ navigation }: RegisterProps) => {
           },
         }));
 
-
         setCoinData(newCoinData);
         setLoading(false);
       } catch (error) {
-        console.error('Napaka pri pridobivanju podatkov o kriptovalutah', error);
+        console.error(
+          "Napaka pri pridobivanju podatkov o kriptovalutah",
+          error
+        );
         setLoading(false);
       }
     };
@@ -65,43 +75,34 @@ const Trznica = ({ navigation }: RegisterProps) => {
   }, []);
 
   function handleDodaj() {
-    navigation.navigate('DodajTrznica');
+    navigation.navigate("DodajTrznica");
   }
 
   return (
     <View style={styles.container}>
-
-    <TouchableOpacity
-    onPress={handleDodaj}
-    style={styles.registerButton}
-  >
-    <Text style={styles.buttonText}>Dodaj</Text>
-  </TouchableOpacity><FlatList
-    data={coinData}
-    keyExtractor={(item) => item.id}
-    renderItem={({ item }) => <CoinItem coin={item} />}
-  />
-   
+      <TouchableOpacity onPress={handleDodaj} style={styles.registerButton}>
+        <Text style={styles.buttonText}>Dodaj</Text>
+      </TouchableOpacity>
+      <Filter />
     </View>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 16,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: "#f0f0f0",
   },
   title: {
     fontSize: 24,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 16,
   },
   coinContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: "#fff",
     borderRadius: 8,
     padding: 12,
     marginBottom: 12,
@@ -117,20 +118,20 @@ const styles = StyleSheet.create({
   },
   coinName: {
     fontSize: 18,
-    fontWeight: 'bold',
+    fontWeight: "bold",
     marginBottom: 4,
   },
   coinDescription: {
     fontSize: 14,
-    color: '#666',
+    color: "#666",
     marginBottom: 4,
   },
   coinQuantity: {
     fontSize: 16,
-    color: '#333',
+    color: "#333",
   },
   registerButton: {
-    backgroundColor: 'gold',
+    backgroundColor: "gold",
     paddingVertical: 15,
     paddingHorizontal: 30,
     borderRadius: 5,
