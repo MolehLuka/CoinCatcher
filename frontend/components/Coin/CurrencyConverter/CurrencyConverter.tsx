@@ -55,7 +55,7 @@ export default function CurrencyConverter({ coin }: { coin: ICoin }) {
     <View style={[styles.container]}>
       <View style={[styles.row, styles.box, styles.bg_gray]}>
         <View style={[styles.col, styles.box]}>
-          <Text style={[styles.white_text]}>{eurConversion.toFixed(2)}</Text>
+          <Text style={[styles.white_text]}>{eurConversion.toFixed(3)}</Text>
           <Text style={[styles.country_text]}>EUR</Text>
         </View>
         <View style={[styles.col, styles.box]}>
@@ -92,7 +92,8 @@ const styles = StyleSheet.create({
     color: "white",
     alignItems: "center",
     backgroundColor: "#edebe6",
-    borderRadius: 20
+    borderRadius: 20,
+    marginVertical: 10,
   },
   row: {
     flexDirection: "row",
@@ -137,5 +138,5 @@ const styles = StyleSheet.create({
   country_text: {
     //color: '#5D5A4F',
     fontWeight: 'bold',
-  }
+  },
 });
