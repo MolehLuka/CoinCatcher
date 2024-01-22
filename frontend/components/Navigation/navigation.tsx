@@ -104,7 +104,7 @@ const AppNavigator = () => {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName={initialRouteName}>
-      <Stack.Screen name="App">
+      <Stack.Screen name="CoinCatcher">
           {(props) => <Navigator {...props} dataChange={dataChange}/>}
         </Stack.Screen>
         <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
