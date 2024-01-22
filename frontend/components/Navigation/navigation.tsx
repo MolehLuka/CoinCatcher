@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, StatusBar, StyleSheet } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, RouteProp } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import CollectionScreen from '../Collection/collection';
 import ScannedCoinInfo from '../ScannedCoinInfo/scannedcoininfo';
@@ -13,13 +13,14 @@ import Trznica, { MyCoin } from '../Trznica/trznica';
 import DodajKovanecScreen from '../DodajTrznica/dodajtrznica';
 import { CameraScreen } from '../CameraScreen/camera';
 import darkColors from 'react-native-elements/dist/config/colorsDark';
+import ClickedCoinInfo from '../ClickedCoinInfo/ClickedCoinInfo';
+import { ICoin } from '../../moduls/ICoin';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 const CameraStack = createStackNavigator();
-
-
+const CollectionStack = createStackNavigator();
 
 
 function CameraStackNavigator() {
@@ -31,11 +32,19 @@ function CameraStackNavigator() {
   );
 }
 
-interface NavigatorProps {
-  dataChange : MyCoin | null;
+function CollectionStackNavigator() {
+  return (
+    <CollectionStack.Navigator>
+      <CollectionStack.Screen name="CollectionScreen" component={CollectionScreen} options={{headerShown: false}}/>
+      <CollectionStack.Screen name="ClickedCoinInfo" component={ClickedCoinInfo} options={{headerShown: false}}/>
+    </CollectionStack.Navigator>
+  );
 }
 
 
+interface NavigatorProps {
+  dataChange : MyCoin | null;
+}
 
 
 function Navigator({ dataChange }: NavigatorProps) {
@@ -43,7 +52,7 @@ function Navigator({ dataChange }: NavigatorProps) {
   return (
 
     <Tab.Navigator>
-      <Tab.Screen name="Collection" component={CollectionScreen} />
+      <Tab.Screen name="Collection" component={CollectionStackNavigator} />
       <Tab.Screen
           name="Camera"
           component={CameraStackNavigator}

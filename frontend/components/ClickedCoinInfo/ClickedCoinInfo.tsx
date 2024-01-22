@@ -31,8 +31,8 @@ interface Coin {
   years: string;
 }
 
-
-const ClickedCoinInfo = ({ coin }: { coin: Coin }) => {
+const ClickedCoinInfo = ({route}: {route: any}) => {
+    const { coin } = route.params;
   const [coinData, setCoinData] = useState<Coin>(coin);
 
   return (
