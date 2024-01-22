@@ -90,6 +90,8 @@ const styles = StyleSheet.create({
     padding: 0,
     color: "white",
     alignItems: "center",
+    backgroundColor: "#edebe6",
+    borderRadius: 20
   },
   row: {
     flexDirection: "row",
