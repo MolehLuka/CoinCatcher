@@ -1,22 +1,36 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Image, View, Text, TextInput, StyleSheet, Keyboard, TouchableWithoutFeedback, TouchableHighlight, TouchableOpacity } from 'react-native';
+import { Button, Image, View, Text, TextInput, StyleSheet, Keyboard, TouchableWithoutFeedback, TouchableHighlight, TouchableOpacity, GestureResponderEvent } from 'react-native';
 import { Icon } from 'react-native-elements';
 import * as ImagePicker from 'expo-image-picker';
 import axios, { AxiosResponse } from 'axios';
 import { baseUrl } from '../../global';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useAuth } from '../../authcontext';
+import { MyCoin } from '../Trznica/trznica';
 
-interface RegisterProps {
+export interface DodajTrznicaProps {
   navigation: NativeStackNavigationProp<any>;
+  handleAddToDatabase: (coin:MyCoin) => any;
 }
 
-const DodajKovanecScreen = ({ navigation }: RegisterProps) => {
+const DodajKovanecScreen = ({ navigation, handleAddToDatabase}: DodajTrznicaProps) => {
   const [ime, setIme] = useState('');
   const [opis, setOpis] = useState('');
   const [kolicina, setKolicina] = useState('');
   const [slika, setSlika] = useState('');
-
+  const [uid, setUid] = useState<string | null>('');
   const [image, setImage] = useState(null);
+
+  useEffect(() => {
+    const fetchUid = async () => {
+      const value = await AsyncStorage.getItem('id');
+      setUid(value);
+      console.log(value)
+    };
+
+    fetchUid();
+  }, []);
 
   const pickImage = async (fromCamera: boolean) => {
     let result;
@@ -45,54 +59,62 @@ const DodajKovanecScreen = ({ navigation }: RegisterProps) => {
     function handleGoBack() {
       navigation.goBack();
     }
-  
 
+ 
 
 
   
     const handleDodajKovanec = async (): Promise<void> => {
       try {
-        // Create FormData object
         const formData = new FormData();
   
-        // Append text data
         formData.append('ime', ime);
         formData.append('opis', opis);
         formData.append('kolicina', kolicina);
   
-        // Append image data
+
         if (image) {
           const localUri: string = image;
           const filename: string = localUri.split('/').pop() || '';
   
-          // Infer the type of the image
+
           const match = /\.(\w+)$/.exec(filename);
           const type = match ? `image/${match[1]}` : 'image';
   
-          // Explicitly cast to any to avoid TypeScript errors
+
           formData.append('slika', {
             uri: localUri,
             name: filename,
             type,
           } as any);
         }
+
+        console.log(uid)
+
+        const phoneNumberResponse = await axios.get(`${baseUrl}/getUser/${uid}`);
+        const phoneNumber = phoneNumberResponse.data.user.telefonskaSt;
+        console.log(phoneNumber)
   
-        // Make the request to get phone number and add current date
-        const phoneNumberResponse = await axios.get(`${baseUrl}/getPhoneNumber`);
-        const phoneNumber = phoneNumberResponse.data.phoneNumber;
-  
-        // Append phone number and current date to the form data
         formData.append('telefonskaSt', phoneNumber);
         formData.append('datum', new Date().toISOString());
   
-        // Make the request to add the coin with updated form data
         const response = await axios.post(`${baseUrl}/dodajSvojKovanec`, formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
         });
-  
         console.log('Odgovor od backend-a:', response.data);
+        const addedCoin: MyCoin = {
+          id: response.data.id,
+          data: {
+            ime,
+            opis,
+            kolicina,
+            slika: response.data.slika, 
+          },
+        };
+        handleAddToDatabase(addedCoin)
+
       } catch (error) {
         if (axios.isAxiosError(error)) {
           console.error('Axios Error:', error);
@@ -153,7 +175,7 @@ const DodajKovanecScreen = ({ navigation }: RegisterProps) => {
   
           <TouchableHighlight
       style={styles.button}
-      underlayColor="#3D8B3D" // Customize the color when pressed
+      underlayColor="#3D8B3D" 
       onPress={handleDodajKovanec}
     >
       <Text style={styles.buttonText}>OBJAVI</Text>
@@ -172,14 +194,14 @@ const DodajKovanecScreen = ({ navigation }: RegisterProps) => {
       padding: 16,
     },
     header: {
-      position: 'absolute', // Position the header absolutely
+      position: 'absolute', 
       top: 20,
       left: 10,
       flexDirection: 'row',
       alignItems: 'center',
     },
     backButton: {
-      // You may adjust these styles based on your preference
+
       backgroundColor: 'transparent',
       padding: 15,
       marginTop: 10
@@ -227,7 +249,7 @@ const DodajKovanecScreen = ({ navigation }: RegisterProps) => {
       color: 'black',
       fontSize: 18,
       fontWeight: 'bold',
-      textAlign: 'center', // Center the text within the button
+      textAlign: 'center', 
     },
 
   });

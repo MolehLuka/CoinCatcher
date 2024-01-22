@@ -97,8 +97,10 @@ app.post("/register", async (req: Request, res: Response) => {
 });
 
 app.get("/getUser/:uid", async (req: Request, res: Response) => {
-  const { uid } = req.params;
+  
+  const  { uid }  = req.params;
 
+  console.log(uid)
   try {
 
     const userDoc = await db.collection('users').doc(uid).get();
