@@ -49,7 +49,7 @@ const Trznica = ({ navigation, dataChange}: RegisterProps) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={handleDodaj} style={styles.registerButton}>
-        <Text style={styles.buttonText}>+ Dodaj</Text>
+        <Text style={styles.buttonText}>+ Add</Text>
       </TouchableOpacity>
       <Filter dataChange={dataChange} navigation={navigation}/>
     </View>

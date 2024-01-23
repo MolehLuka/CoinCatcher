@@ -36,27 +36,27 @@ const CoinModal = ({ visible, onClose, coin }: CoinModalProps) => {
             
 
               <View style={[styles.tableRow, styles.row1]}>
-                <Text style={styles.attributeText}>Količina</Text>
+                <Text style={styles.attributeText}>Quantity</Text>
                 <Text style={styles.valueText}>{coin.data.kolicina}</Text>
               </View>
 
               <View style={[styles.tableRow, styles.row2]}>
-                <Text style={styles.attributeText}>Opis</Text>
+                <Text style={styles.attributeText}>Description</Text>
                 <Text style={styles.valueText}>{coin.data.opis}</Text>
               </View>
 
               <View style={[styles.tableRow, styles.row1]}>
-                <Text style={styles.attributeText}>Kontakt</Text>
+                <Text style={styles.attributeText}>Contact</Text>
                 <Text style={styles.valueText}>{coin.data.telefonskaSt}</Text>
               </View>
 
               <View style={[styles.tableRow, styles.row2]}>
-                <Text style={styles.attributeText}>Datum</Text>
+                <Text style={styles.attributeText}>Posted on</Text>
                 <Text style={styles.valueText}>{datePart}</Text>
               </View>
 
               <View style={[styles.tableRow, styles.row1]}>
-                <Text style={styles.attributeText}>Avtor</Text>
+                <Text style={styles.attributeText}>Posted by</Text>
                 <Text style={styles.valueText}>{coin.data.imepriimek}</Text>
               </View>
               
@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     padding: 80,
     borderRadius: 20,
-    width: '90%',
+    width: '95%',
     maxHeight: '80%',
   },
   closeButton: {
@@ -117,7 +117,7 @@ const styles = StyleSheet.create({
   },
   tableContainer: {
     marginTop: 10,
-    width: '130%',
+    width: '140%',
 
   },
   tableRow: {

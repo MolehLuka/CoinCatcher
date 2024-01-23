@@ -166,31 +166,34 @@ const DodajKovanecScreen = ({
           </TouchableOpacity>
         </View>
         <TextInput
-          style={styles.input}
-          placeholder="Ime kovanca"
-          onChangeText={setIme}
-          value={ime}
-        />
-        <TextInput
-          style={[styles.input, { height: "20%" }]}
-          placeholder="Opis kovanca"
-          onChangeText={setOpis}
-          value={opis}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Količina"
-          onChangeText={setKolicina}
-          value={kolicina}
-          keyboardType="numeric"
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Cena"
-          onChangeText={setCena}
-          value={cena}
-          keyboardType="numeric"
-        />
+  style={styles.input}
+  placeholder="Coin Name"
+  onChangeText={setIme}
+  value={ime}
+/>
+
+<TextInput
+  style={[styles.input, { height: "20%" }]}
+  placeholder="Coin Description"
+  onChangeText={setOpis}
+  value={opis}
+/>
+
+<TextInput
+  style={styles.input}
+  placeholder="Quantity"
+  onChangeText={setKolicina}
+  value={kolicina}
+  keyboardType="numeric"
+/>
+
+<TextInput
+  style={styles.input}
+  placeholder="Price (EUR) "
+  onChangeText={setCena}
+  value={cena}
+  keyboardType="numeric"
+/>
 
         <View style={styles.imagePickerContainer}>
           <Icon
@@ -212,7 +215,7 @@ const DodajKovanecScreen = ({
           underlayColor="#3D8B3D"
           onPress={handleDodajKovanec}
         >
-          <Text style={styles.buttonText}>OBJAVI</Text>
+         <Text style={styles.buttonText}>+ Add</Text>
         </TouchableHighlight>
       </View>
     </TouchableWithoutFeedback>
@@ -237,7 +240,8 @@ const styles = StyleSheet.create({
     backgroundColor: "gray",
     borderRadius: 50,
     padding: 8,
-    top: 20,
+    top: 30,
+    left: 10,
     marginBottom: 100,
     marginRight: 8,
   },
@@ -250,16 +254,17 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
   },
-
   input: {
     height: 40,
     borderColor: "orange",
     borderWidth: 1,
-    marginBottom: 10,
+    marginBottom: 20,  
     padding: 10,
-    width: "100%",
+    width: "80%",
     borderRadius: 8,
-    backgroundColor: "#f3f3f3",
+    backgroundColor: "#fafafa",  
+    color: "#333",  
+    fontSize: 15
   },
   imagePickerContainer: {
     flexDirection: "row",
@@ -279,17 +284,24 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   button: {
-    backgroundColor: "gold",
-    paddingVertical: 15,
-    paddingHorizontal: 30,
-    borderRadius: 15,
-    marginTop: 20,
+    backgroundColor: "#FFA500", // Orange color
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 20,
+    elevation: 3, // Add elevation for Android shadow
+    shadowColor: "#000000", // Shadow for iOS
+    shadowOffset: { width: 0, height: 2 }, // Shadow for iOS
+    shadowOpacity: 0.3, // Shadow for iOS
+    shadowRadius: 2, // Shadow for iOS
+
   },
   buttonText: {
-    color: "black",
+    color: "white",
     fontSize: 18,
-    fontWeight: "bold",
-    textAlign: "center",
+    fontWeight: "bold", 
+    
   },
 });
 
