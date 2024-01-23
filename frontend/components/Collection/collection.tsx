@@ -29,8 +29,19 @@ export const CollectionScreen: React.FC<Props> = ({navigation }) => {
   const [empty, setEmpty] = useState(false);
 
   const extractEuroValue = (value: string) => {
+    // Try to extract value from within parentheses first
     const match = value.match(/\((\d+\.\d+) EUR\)/);
-    return match ? parseFloat(match[1]) : 0;
+    if (match) {
+      return parseFloat(match[1]);
+    }
+  
+    // Fallback: Try to directly parse the numeric value if no parentheses format
+    const numericValue = parseFloat(value);
+    if (!isNaN(numericValue)) {
+      return numericValue;
+    }
+  
+    return 0;
   };
 
   const totalAmount = coins.reduce((sum, coin) => sum + extractEuroValue(coin.value), 0);
