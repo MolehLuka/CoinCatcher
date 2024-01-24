@@ -1,20 +1,26 @@
-import { StatusBar } from 'expo-status-bar';
-import React, { useEffect, useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import AppNavigator from './components/Navigation/navigation';
-import { AuthProvider } from './authcontext';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { StatusBar } from "expo-status-bar";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, Text, View } from "react-native";
+import AppNavigator from "./components/Navigation/navigation";
+import { AuthProvider } from "./authcontext";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
+import LoadingScreen from "./components/LoadingScreen/loadingscreen";
 
 export default function App() {
+  const [loading, setLoading] = useState(true);
 
-
+  useEffect(() => {
+    setTimeout(() => {
+      setLoading(false);
+    }, 4000);
+  }, []);
 
   return (
     <View style={styles.container}>
-       <AuthProvider>
-      <AppNavigator />
-      <StatusBar style="auto" />
+      <AuthProvider>
+        {loading ? <LoadingScreen /> : <AppNavigator />}
+        <StatusBar style="auto" />
       </AuthProvider>
     </View>
   );
