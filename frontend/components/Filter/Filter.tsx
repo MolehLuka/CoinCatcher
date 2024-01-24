@@ -117,7 +117,7 @@ export default function Filter({dataChange}: FilterProps) {
   return (
     <View style={[styles.flex]}>
       <View style={[styles.pickerContainer, styles.filterContainer]}>
-        <Text style={[styles.pickerLabel]}>Izberite kategorijo</Text>
+        <Text style={[styles.pickerLabel]}>Select a category</Text>
         <RNPickerSelect
           placeholder={placeholderCategory}
           items={categoryOptions.map((category) => ({

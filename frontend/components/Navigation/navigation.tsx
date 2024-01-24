@@ -18,6 +18,7 @@ import { Fontisto } from "@expo/vector-icons";
 import ClickedCoinInfo from '../ClickedCoinInfo/ClickedCoinInfo';
 import { ICoin } from '../../moduls/ICoin';
 
+
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
