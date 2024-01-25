@@ -49,7 +49,7 @@ export default function Filter({dataChange}: FilterProps) {
             ime: document.data.ime,
             kolicina: document.data.kolicina,
             opis: document.data.opis,
-            slika: 'https://as2.ftcdn.net/v2/jpg/03/16/24/49/1000_F_316244961_4Kch7qlXUf8accn4wXUK4vA4ZfPMmpPh.jpg',
+            slika: document.data.slika,
             telefonskaSt: document.data.telefonskaSt,
             datum: document.data.datum,
             imepriimek: document.data.imepriimek,

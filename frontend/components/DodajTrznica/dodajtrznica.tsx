@@ -173,7 +173,7 @@ const DodajKovanecScreen = ({
           onChangeText={setIme}
           value={ime}
         />
-        <TouchableOpacity style={styles.buttonContainer} onPress={() => {Alert.alert('', 'Vnesite ime kovanca!')}}>
+        <TouchableOpacity style={styles.buttonContainer} onPress={() => {Alert.alert('', 'Enter the coin name!')}}>
         <Text style={styles.icon}>?</Text>
         </TouchableOpacity>
       </View>
@@ -187,7 +187,7 @@ const DodajKovanecScreen = ({
           multiline={true}
           value={opis}
         />
-        <TouchableOpacity style={styles.buttonContainer} onPress={() => {Alert.alert('', 'Opišite svoj kovanec!')}}>
+        <TouchableOpacity style={styles.buttonContainer} onPress={() => {Alert.alert('', 'Describe the coin!')}}>
         <Text style={styles.icon}>?</Text>
         </TouchableOpacity>
       </View>
@@ -200,7 +200,7 @@ const DodajKovanecScreen = ({
           value={kolicina}
           keyboardType="numeric"
         />
-        <TouchableOpacity style={styles.buttonContainer} onPress={() => {Alert.alert('', 'Vnesite koliko kovancev želite prodati!')}}>
+        <TouchableOpacity style={styles.buttonContainer} onPress={() => {Alert.alert('', 'Enter the coin amount!')}}>
         <Text style={styles.icon}>?</Text>
         </TouchableOpacity>
       </View>
@@ -214,7 +214,7 @@ const DodajKovanecScreen = ({
           value={cena}
           keyboardType="numeric"
         />
-        <TouchableOpacity style={styles.buttonContainer} onPress={() => {Alert.alert('', 'Vnesite ceno za katero želite prodati svoj kovanec!');}}>
+        <TouchableOpacity style={styles.buttonContainer} onPress={() => {Alert.alert('', 'Enter the total price!');}}>
         <Text style={styles.icon}>?</Text>
         </TouchableOpacity>
       </View>

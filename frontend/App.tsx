@@ -4,10 +4,12 @@ import { StyleSheet, Text, View } from "react-native";
 import AppNavigator from "./components/Navigation/navigation";
 import { AuthProvider } from "./authcontext";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { LogBox } from "react-native";
 
 import LoadingScreen from "./components/LoadingScreen/loadingscreen";
 
 export default function App() {
+  LogBox.ignoreAllLogs();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

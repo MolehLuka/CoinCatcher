@@ -272,7 +272,7 @@ app.get('/random-coin', async (req, res) => {
     });
 
     // Select a random coin
-    const randomCoin = coins[4];
+    const randomCoin = coins[Math.floor(Math.random() * coins.length)];
     res.json(randomCoin);
   } catch (err) {
     res.status(500).send('Server error accessing Firestore');
