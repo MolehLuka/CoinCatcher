@@ -2,6 +2,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React, { useEffect, useState } from "react";
 import auth from "@react-native-firebase/auth";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import AwesomeButton from "react-native-really-awesome-button";
 import {
   View,
   Text,
@@ -73,10 +74,32 @@ function Login({ navigation }: LoginProps) {
     navigation.navigate("Register");
   };
 
+  const [loading, setLoading] = useState(false);
+
+  const onPress = async (next: (() => void) | undefined) => {
+    setLoading(true);
+    handleLogin()
+    if(next == null){
+      return ;
+    }
+
+
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+
+    setLoading(false);
+    next();
+  };
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Prijava</Text>
-      <TextInput
+      <View>
+      <View style={styles.headerContainer}>
+      <Text style={styles.headerText}>CoinCatcher</Text>
+ 
+    </View>
+    </View>
+   
+    <TextInput
         style={styles.input}
         placeholder="Email"
         onChangeText={setEmail}
@@ -87,7 +110,7 @@ function Login({ navigation }: LoginProps) {
       />
       <TextInput
         style={styles.input}
-        placeholder="Geslo"
+        placeholder="Password"
         onChangeText={setPassword}
         value={password}
         secureTextEntry
@@ -96,13 +119,28 @@ function Login({ navigation }: LoginProps) {
         onEndEditing={() => Keyboard.dismiss()}
       />
       <TouchableOpacity onPress={navigateToRegister}>
-        <Text style={styles.registerLink}>
-          Nimate računa? Registrirajte se tukaj
-        </Text>
+      <View style={styles.rowContainer}>
+        <Text style={styles.mainText}>Don't have an account? Register</Text>
+        <Text style={styles.registerLink}>here</Text>
+      </View>
       </TouchableOpacity>
-      <TouchableOpacity onPress={handleLogin} style={styles.loginButton}>
-        <Text style={styles.loginButtonText}>Prijava</Text>
-      </TouchableOpacity>
+      <AwesomeButton
+      progress
+      onPress={(next) => onPress(next)}
+      progressLoadingTime={3000} // Adjust the time based on your needs
+      disabled={loading}
+      backgroundColor={"#FFA500"}
+      width={160}
+      height={50}
+      textSize={18}
+      textColor="white"
+    >
+      {loading ? "Loading..." : "Sign in"}
+    </AwesomeButton>
+
+
+
+
 
       <Modal isVisible={isModalVisible}>
         <View style={styles.modalContent}>
@@ -125,37 +163,73 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: "bold",
     marginBottom: 20,
+    
   },
   input: {
-    height: 40,
-    borderColor: "gray",
-    borderWidth: 1,
+    height: 50,
     marginBottom: 20,
-    padding: 10,
-    width: "100%",
-    borderRadius: 5,
+    paddingHorizontal: 15,
+    width: '100%',
+    borderRadius: 8,
+    backgroundColor: '#F4F4F4', // Light gray background
+    borderWidth: 1,
+    borderColor: '#E0E0E0', // Lighter gray border
+    fontSize: 16,
+    color: '#333', // Dark gray text color
   },
 
   loginButton: {
-    backgroundColor: "gold",
+    backgroundColor: 'gray',
     paddingVertical: 15,
     paddingHorizontal: 30,
-    borderRadius: 5,
+    borderRadius: 8,
     marginTop: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+    
   },
 
   registerLink: {
-    color: "#3498db",
+
     marginBottom: 20,
     textDecorationLine: "underline",
+    fontSize: 16,
+    fontWeight: 'bold', // Make the text bold
+    color: '#007BFF', // Use a different color for the link
+    marginLeft: 5, 
   },
+  rowContainer: {
+    flexDirection: 'row',
+
+  },
+  mainText: {
+    fontSize: 16,
+    color: '#333', // Change the color as needed
+    
+  },
+
   modalContent: {
     backgroundColor: "white",
     padding: 20,
     borderRadius: 10,
     alignItems: "center",
   },
+  headerContainer: {
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: '#f1f1f1', // Adjust the background color as needed
+  },
+  headerText: {
+    fontSize: 40,
+    fontWeight: 'bold',
+    color: "#FFA500", // Adjust the text color as needed
+    marginBottom: 20,
 
+  },
+  subtext: {
+    fontSize: 14,
+    color: '#666', // Adjust the text color as needed
+  },
   loginButtonText: {
     color: "black",
     fontSize: 18,

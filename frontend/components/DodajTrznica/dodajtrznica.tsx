@@ -11,6 +11,7 @@ import {
   TouchableHighlight,
   TouchableOpacity,
   GestureResponderEvent,
+  Alert,
 } from "react-native";
 import { Icon } from "react-native-elements";
 import * as ImagePicker from "expo-image-picker";
@@ -162,38 +163,62 @@ const DodajKovanecScreen = ({
             onPress={() => navigation.goBack()}
             style={styles.closeIconContainer2}
           >
-            <Icon name="close" type="material-community" color="orange" />
+            <Icon name="close" type="material-community" color="black" />
           </TouchableOpacity>
         </View>
+        <View style={styles.inputContainer}>
         <TextInput
-  style={styles.input}
-  placeholder="Coin Name"
-  onChangeText={setIme}
-  value={ime}
-/>
+          style={styles.input}
+          placeholder="Coin Name"
+          onChangeText={setIme}
+          value={ime}
+        />
+        <TouchableOpacity style={styles.buttonContainer} onPress={() => {Alert.alert('', 'Vnesite ime kovanca!')}}>
+        <Text style={styles.icon}>?</Text>
+        </TouchableOpacity>
+      </View>
 
-<TextInput
-  style={[styles.input, { height: "20%" }]}
-  placeholder="Coin Description"
-  onChangeText={setOpis}
-  value={opis}
-/>
 
-<TextInput
-  style={styles.input}
-  placeholder="Quantity"
-  onChangeText={setKolicina}
-  value={kolicina}
-  keyboardType="numeric"
-/>
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={[styles.input, { height: "200%" }]}
+          placeholder="Coin Description"
+          onChangeText={setOpis}
+          multiline={true}
+          value={opis}
+        />
+        <TouchableOpacity style={styles.buttonContainer} onPress={() => {Alert.alert('', 'Opišite svoj kovanec!')}}>
+        <Text style={styles.icon}>?</Text>
+        </TouchableOpacity>
+      </View>
 
-<TextInput
-  style={styles.input}
-  placeholder="Price (EUR) "
-  onChangeText={setCena}
-  value={cena}
-  keyboardType="numeric"
-/>
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Quantity"
+          onChangeText={setKolicina}
+          value={kolicina}
+          keyboardType="numeric"
+        />
+        <TouchableOpacity style={styles.buttonContainer} onPress={() => {Alert.alert('', 'Vnesite koliko kovancev želite prodati!')}}>
+        <Text style={styles.icon}>?</Text>
+        </TouchableOpacity>
+      </View>
+
+
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.input}
+          placeholder="Price (EUR)"
+          onChangeText={setCena}
+          value={cena}
+          keyboardType="numeric"
+        />
+        <TouchableOpacity style={styles.buttonContainer} onPress={() => {Alert.alert('', 'Vnesite ceno za katero želite prodati svoj kovanec!');}}>
+        <Text style={styles.icon}>?</Text>
+        </TouchableOpacity>
+      </View>
+
 
         <View style={styles.imagePickerContainer}>
           <Icon
@@ -232,18 +257,22 @@ const styles = StyleSheet.create({
   header: {
     position: "absolute",
     top: 20,
-    left: 10,
+    left: 7,
     flexDirection: "row",
     alignItems: "center",
   },
   closeIconContainer2: {
-    backgroundColor: "gray",
+    backgroundColor: "lightgray",
     borderRadius: 50,
     padding: 8,
     top: 30,
     left: 10,
     marginBottom: 100,
     marginRight: 8,
+  },
+  icon: {
+    padding: 8,
+    fontSize:16
   },
   backButton: {
     backgroundColor: "transparent",
@@ -255,17 +284,24 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   input: {
-    height: 40,
-    borderColor: "orange",
-    borderWidth: 1,
-    marginBottom: 20,  
-    padding: 10,
-    width: "80%",
+    height: 50,
+    paddingHorizontal: 15,
+    width: '80%',
     borderRadius: 8,
-    backgroundColor: "#fafafa",  
-    color: "#333",  
-    fontSize: 15
+    backgroundColor: '#F4F4F4',
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
+    fontSize: 16,
+    color: '#333',
   },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginVertical: 13,
+    paddingHorizontal: 10,  
+  },
+  
   imagePickerContainer: {
     flexDirection: "row",
     justifyContent: "space-around",
@@ -276,6 +312,7 @@ const styles = StyleSheet.create({
     padding: 25,
     borderRadius: 15,
     marginHorizontal: 10,
+    
   },
   imagePreview: {
     width: 200,
@@ -285,6 +322,7 @@ const styles = StyleSheet.create({
   },
   button: {
     backgroundColor: "#FFA500", // Orange color
+    padding: 8,
     paddingVertical: 10,
     paddingHorizontal: 20,
     justifyContent: "center",
@@ -296,6 +334,15 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.3, // Shadow for iOS
     shadowRadius: 2, // Shadow for iOS
 
+  },
+  buttonContainer: {
+    width: 35,
+    height: 35,
+    borderRadius: 20,
+    backgroundColor: 'lightgray',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginLeft: 5,  // Adjust the left margin to create space between items
   },
   buttonText: {
     color: "white",

@@ -1,4 +1,4 @@
-export const baseUrl = "http://164.8.163.183:3000";
+export const baseUrl = "http://164.8.207.123:3000";
 
 // teo :192.168.0.18
 // lena: 192.168.1.5

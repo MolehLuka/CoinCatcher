@@ -149,7 +149,6 @@ app.post("/dodajSvojKovanec", upload.single('slika'), async (req: Request , res:
   try {
     
     const { ime, opis, kolicina, telefonskaSt, datum, imepriimek, cena } = req.body;
-/*
     if (!req.file) {
       console.log(req.file)
       return res.status(400).json({ error: 'No image file provided' });
@@ -170,14 +169,12 @@ app.post("/dodajSvojKovanec", upload.single('slika'), async (req: Request , res:
       action: 'read',
       expires: '01-01-2100',
     });
-*/
 
     const kovanecRef = await db.collection('kovanecSeznam').add({
       ime,
       opis,
       kolicina,
-     // slika: imageUrl[0],
-     slika: 'https://as2.ftcdn.net/v2/jpg/03/16/24/49/1000_F_316244961_4Kch7qlXUf8accn4wXUK4vA4ZfPMmpPh.jpg',
+      slika: imageUrl[0],
       telefonskaSt,
       datum,
       imepriimek,
@@ -190,6 +187,63 @@ app.post("/dodajSvojKovanec", upload.single('slika'), async (req: Request , res:
     res.status(500).json({ error: 'Napaka pri dodajanju kovanca' });
   }
 });
+
+
+
+app.delete("/removeCoin/:id/:uid", async (req: Request, res: Response) => {
+  try {
+    const { id, uid } = req.params;
+    let numericValue = parseInt(id, 10);
+
+    await removeCoinFromCollection(uid, numericValue);
+
+    res.status(200).json({ message: `Item with id ${id} removed successfully` });
+  } catch (error) {
+    console.error('Error removing coin:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+interface Coin {
+  composition: string;
+  currency: string;
+  diameter: string;
+  id: number;
+  images: {
+    back: string;
+    front: string;
+  };
+  issuer: string;
+  obverse: string;
+  reverse: string;
+  shape: string;
+  thickness: string;
+  value: string;
+  weight: string;
+  years: string;
+}
+
+async function removeCoinFromCollection(userId: string, coinId: number): Promise<void> {
+  try {
+    const userCollectionRef = db.collection('userCoinCollections').doc(userId);
+    const doc = await userCollectionRef.get();
+
+    if (!doc.exists) {
+      console.error('Collection not found for user:', userId);
+      return;
+    }
+
+    const coins = doc.data()?.coins || [];
+    console.log(coins)
+
+    const updatedCoins = coins.filter((coin:Coin) => coin.id !== coinId);
+    console.log(updatedCoins)
+    await userCollectionRef.update({ coins: updatedCoins });
+  } catch (error) {
+    console.error('Error removing coin from collection:', error);
+    throw error; // Propagate the error for handling in the calling function
+  }
+}
 
 app.get("/pridobiKovanceTrznica", async (req: Request, res: Response) => {
   try {

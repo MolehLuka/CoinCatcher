@@ -1,5 +1,5 @@
-import React, { useRef } from "react";
-import { View, Text, StyleSheet, ScrollView } from "react-native";
+import React, { useId, useRef } from "react";
+import { View, Text, StyleSheet, ScrollView, TouchableHighlight } from "react-native";
 import { Image, TouchableOpacity } from "react-native";
 import Coin from "../Coin/Coin";
 import CurrencyConverter from "../Coin/CurrencyConverter/CurrencyConverter";
@@ -14,6 +14,7 @@ import DropdownAlert, {
 import {
   PulseIndicator,
 } from "react-native-indicators";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 interface Coin {
   composition: string;
@@ -34,12 +35,44 @@ interface Coin {
   years: string;
 }
 
-const ClickedCoinInfo = ({route}: {route: any}) => {
+interface ClickedCoinInterface{
+  route: any;
+  navigation: NativeStackNavigationProp<any>;
+}
+
+function ClickedCoinInfo ({route,navigation}: ClickedCoinInterface) {
     const { coin } = route.params;
   const [coinData, setCoinData] = useState<Coin>(coin);
+  const [uid, setUid] = useState<string | null>("");
 
   const [frontImageLoading, setFrontImageLoading] = useState(true);
   const [backImageLoading, setBackImageLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchUid = async () => {
+      const value = await AsyncStorage.getItem("id");
+      setUid(value);
+      console.log(value);
+    };
+
+    fetchUid();
+  }, []);
+
+
+  const handelRemoveCoin = (id: number) => {
+    axios.delete(`${baseUrl}/removeCoin/${id}/${uid}`)
+      .then(response => {
+        console.log(`Item with id ${id} removed successfully`);
+        console.log('route.params:', route.params);
+        console.log('navigation:', navigation);
+        console.log(response)
+        navigation.goBack()
+        
+      })
+      .catch(error => {
+        console.error(`Error removing item with id ${id}:`, error);
+      });
+  };
 
   return (
     <ScrollView style={styles.container}>
@@ -57,7 +90,7 @@ const ClickedCoinInfo = ({route}: {route: any}) => {
           onLoad={() => setBackImageLoading(false)}
         />
       </View>
-
+   
       <Text
         style={styles.coinName}
       >{`${coinData.issuer} ${coinData.value}`}</Text>
@@ -100,7 +133,13 @@ const ClickedCoinInfo = ({route}: {route: any}) => {
           </View>
         </View>
       </View>
-
+      <TouchableHighlight
+  style={[styles.button, styles.centeredButton]}
+  underlayColor="#3D8B3D"
+  onPress={() => handelRemoveCoin(coinData.id)}
+>
+  <Text style={styles.buttonText}>Remove coin</Text>
+</TouchableHighlight>
     </ScrollView>
   );
 };
@@ -111,6 +150,31 @@ const styles = StyleSheet.create({
     padding: 20,
     //justifyContent: "space-between",
     backgroundColor: "white",
+    paddingBottom: 50,
+
+    
+  },
+ 
+  centeredButton: {
+    alignSelf: 'center',
+    marginBottom:30
+  },
+  button: {
+    backgroundColor: "#FFA500", // Set the background color
+    padding: 10, // Adjust padding as needed
+    borderRadius: 8, // Add border radius for rounded corners
+    justifyContent: "center", // Center text vertically
+    alignItems: "center", // Center text horizontally
+    elevation: 3, // Add elevation for a shadow effect (Android)
+    shadowColor: "#000000", // Shadow for iOS
+    shadowOffset: { width: 0, height: 2 }, // Shadow for iOS
+    shadowOpacity: 0.3, // Shadow for iOS
+    shadowRadius: 2, // Shadow for iOS
+  },
+  buttonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
   },
   imageContainer: {
     flexDirection: "row", // This will arrange the images in a row

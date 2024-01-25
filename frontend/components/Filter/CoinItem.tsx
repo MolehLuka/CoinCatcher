@@ -49,8 +49,8 @@ import { MyCoin } from '../Trznica/trznica';
       
     },
     coinImage: {
-      width: 120,
-      height: 120,
+      width: 150,
+      height: 150,
       borderRadius: 100,
       marginRight: 12,
     },

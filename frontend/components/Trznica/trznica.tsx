@@ -12,6 +12,7 @@ import {
 import { baseUrl } from "../../global";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import Filter from "../Filter/Filter";
+import { Icon } from "react-native-elements";
 
 export interface MyCoin {
   id: string;
@@ -43,13 +44,33 @@ const Trznica = ({ navigation, dataChange}: RegisterProps) => {
 
 
   function handleDodaj() {
+    console.log('x')
     navigation.navigate("DodajTrznica");
   }
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={handleDodaj} style={styles.registerButton}>
-        <Text style={styles.buttonText}>+ Add</Text>
+
+        
+      <TouchableOpacity
+        style={{
+          position: 'absolute',
+          bottom: 16,
+          right: 17,
+          width: 70,
+          height: 70,
+          borderRadius: 50,
+          backgroundColor: 'orange',
+          alignItems: 'center',
+          justifyContent: 'center',
+          zIndex: 1,
+        }}
+        onPress={() => {
+          navigation.navigate("DodajTrznica");
+        }}
+      >
+        {/* Replace with your actual icon component */}
+        <Icon name="add" size={30} color="white" />
       </TouchableOpacity>
       <Filter dataChange={dataChange} navigation={navigation}/>
     </View>

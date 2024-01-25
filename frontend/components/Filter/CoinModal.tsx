@@ -98,8 +98,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   coinImage: {
-    width: 150,
-    height: 150,
+    width: 180,
+    height: 180,
     borderRadius: 75,
     marginBottom: 15,
   },

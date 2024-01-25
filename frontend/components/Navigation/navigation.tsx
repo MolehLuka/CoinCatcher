@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, StatusBar, StyleSheet } from "react-native";
+import { View, StatusBar, StyleSheet, TouchableOpacity, Modal, Button } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer, RouteProp } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
@@ -17,6 +17,8 @@ import { Ionicons } from "@expo/vector-icons";
 import { Fontisto } from "@expo/vector-icons";
 import ClickedCoinInfo from '../ClickedCoinInfo/ClickedCoinInfo';
 import { ICoin } from '../../moduls/ICoin';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 
 const Tab = createBottomTabNavigator();
@@ -57,6 +59,9 @@ interface NavigatorProps {
   dataChange: MyCoin | null;
 }
 
+const Drawer = createDrawerNavigator();
+
+
 
 function Navigator({ dataChange }: NavigatorProps) {
   return (
@@ -76,7 +81,7 @@ function Navigator({ dataChange }: NavigatorProps) {
             color = focused ? "#FFA500" : color; // Change the color when focused
             iconStyle = { marginTop: 10 };
           }
-          if (route.name === "Trznica") {
+          if (route.name === "Marketplace") {
             iconName = "cart"; // Change the icon name based on your preference
             color = focused ? "#FFA500" : color; // Change the color when focused
             size = 35
@@ -103,12 +108,17 @@ function Navigator({ dataChange }: NavigatorProps) {
           tabBarLabel: () => null,
         }}
       />
-      <Tab.Screen name="Trznica" options={{ headerShown: false, tabBarLabelStyle: { fontWeight: "bold" }}}>
+      <Tab.Screen name="Marketplace" options={{ headerShown: false, tabBarLabelStyle: { fontWeight: "bold" }}}>
         {(props) => <Trznica dataChange={dataChange} {...props} />}
       </Tab.Screen>
     </Tab.Navigator>
   );
 }
+
+export interface Logoutprops {
+  navigation: any;
+}
+
 
 const AppNavigator = () => {
   const [initialRouteName, setInitialRouteName] = useState("");
@@ -144,12 +154,57 @@ const AppNavigator = () => {
     return null;
   }
 
+
+  const ProfileButton = ({navigation}: Logoutprops) => {
+    const [isModalVisible, setModalVisible] = useState(false);
+  
+    const handleLogout = async () => {
+      await AsyncStorage.removeItem("id");
+      navigation.navigate('Login')
+      setModalVisible(false);
+    };
+  
+    return (
+      <View style={{ flexDirection: 'row', marginRight: 10 }}>
+        <TouchableOpacity
+          onPress={() => {
+            setModalVisible(true);
+          }}
+        >
+          <Ionicons name="ios-person" size={30} color="gray" />
+        </TouchableOpacity>
+  
+
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={isModalVisible}
+        >
+          <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+            <View style={{ backgroundColor: 'lightgray', padding: 20, borderRadius: 10 }}>
+           
+              <Button title="Logout" onPress={handleLogout} />
+              <Button title="Cancel" onPress={() => setModalVisible(false)} />
+            </View>
+          </View>
+        </Modal>
+      </View>
+    );
+  };
+
+
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName={initialRouteName}>
-        <Stack.Screen name="CoinCatcher" options={{headerTitleAlign: "left"}}>
-          {(props) => <Navigator {...props} dataChange={dataChange} />}
-        </Stack.Screen>
+      <Stack.Screen
+  name="CoinCatcher"
+  options={(props) => ({
+    headerTitleAlign: "left",
+    headerRight: () => <ProfileButton navigation={props.navigation} />,
+  })}
+>
+  {(props) => <Navigator {...props} dataChange={dataChange} />}
+</Stack.Screen>
         <Stack.Screen
           name="Login"
           component={Login}
@@ -169,6 +224,8 @@ const AppNavigator = () => {
           )}
         </Stack.Screen>
       </Stack.Navigator>
+
+  
     </NavigationContainer>
   );
 };
