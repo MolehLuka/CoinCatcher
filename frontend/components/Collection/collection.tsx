@@ -61,6 +61,8 @@ export const CollectionScreen: React.FC<Props> = ({navigation }) => {
 
       if (response.data.length === 0) {
         setEmpty(true);
+      } else {
+        setEmpty(false);
       }
 
       setCoins(response.data);
